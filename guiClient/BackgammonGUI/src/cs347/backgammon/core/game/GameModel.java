@@ -16,7 +16,7 @@ public class GameModel
 	
 	public GameModel()
 	{
-		
+		gameState = new GameState(new BoardState(), DiceState.randomDice(), PlayerID.Player1);
 		player1 = new PlayerInfo();
 		player2 = new PlayerInfo();
 		player1.setPlayerID(PlayerID.Player1);
@@ -36,6 +36,15 @@ public class GameModel
 			return player1;
 		else
 			return player2;
+	}
+	
+	/**
+	 * Get the current state of the game.
+	 * @return The current state of the game.;
+	 */
+	public GameState getCurrentGameState()
+	{
+		return gameState;
 	}
 	
 	/**

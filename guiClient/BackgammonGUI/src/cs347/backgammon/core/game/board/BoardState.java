@@ -194,4 +194,21 @@ public class BoardState
 	{
 		return Arrays.asList(board);
 	}
+
+	/**
+	 * Forcibly trigger the BoardCells to notify their listeners. Useful for
+	 * initializing the Game GUI.
+	 * @see cs347.backgammon.core.game.board.BoardCell#notifyCellListener()
+	 */
+	public void forceBoardCellUpdates()
+	{
+		for(BoardCell bc : board)
+			bc.notifyCellListener();
+		
+		p1Bar.notifyCellListener();
+		p2Bar.notifyCellListener();
+
+		p1Score.notifyCellListener();
+		p2Score.notifyCellListener();
+	}
 }
