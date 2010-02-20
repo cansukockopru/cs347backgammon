@@ -15,6 +15,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 import cs347.backgammon.core.game.board.BoardCell;
 import cs347.backgammon.core.game.board.CellOwner;
@@ -25,6 +26,12 @@ import cs347.backgammon.gui.game.boardwidgets.checkers.CheckerGroup;
 
 public class BoardCellWidget
 {
+	public enum HighlightMode
+	{
+		Hover,
+		Selected;
+	}
+	
 	private int boardPointID;
 	private Color triangleColor;
 
@@ -35,6 +42,8 @@ public class BoardCellWidget
 
 	private IBoardCellListener cellListener;
 
+	private Border normalBorder, hoverBorder, selectedBorder;
+	
 	public BoardCellWidget(int id)
 	{
 		boardPointID = id;
@@ -49,10 +58,34 @@ public class BoardCellWidget
 			triangleColor = GameGUICfg.getInstance().getOddBoardCellColor();;
 
 		checkers = new CheckerGroup();
+		
+		normalBorder = BorderFactory.createLineBorder(new Color(0,0,0,0) /*Transparent*/, 5);
+		//normalBorder = BorderFactory.createLineBorder(Color.BLACK, 5);
+		hoverBorder = BorderFactory.createLineBorder(GameGUICfg.getInstance().getBoardCellHoverHighlight(), 5);
+		selectedBorder = BorderFactory.createLineBorder(GameGUICfg.getInstance().getBoardCellSelectedHighlight(), 5);
+		
 		buildGUI();
 		initBoardCellListener();
 	}
 
+	public void disableHighlight()
+	{
+		renderable.setBorder(normalBorder);
+	}
+	
+	public void setHighlightMode(HighlightMode mode) 
+	{
+		if(mode == HighlightMode.Hover)
+			renderable.setBorder(hoverBorder);
+		else
+			renderable.setBorder(selectedBorder);
+	}
+	
+	public int getBoardCellWidgetID()
+	{
+		return boardPointID;
+	}
+	
 	private void initBoardCellListener()
 	{
 		cellListener = new IBoardCellListener()
@@ -80,6 +113,7 @@ public class BoardCellWidget
 	{
 		renderable = new JPanel();
 		renderable.setLayout(new GridBagLayout());
+		renderable.setBorder(normalBorder);
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 0;

@@ -1,5 +1,8 @@
 package cs347.backgammon.core.game.moves;
 
+/**
+ * List of all possible move errors. 
+ */
 public enum MoveErrorCondition
 {
 	AllCheckersInHomeArea,

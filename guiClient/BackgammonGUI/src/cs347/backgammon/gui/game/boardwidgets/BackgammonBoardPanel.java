@@ -3,9 +3,11 @@ package cs347.backgammon.gui.game.boardwidgets;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Point;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 import cs347.backgammon.core.game.board.BoardState;
 import cs347.backgammon.core.game.players.PlayerID;
@@ -16,18 +18,19 @@ public class BackgammonBoardPanel
 	private BoardBar bar;
 	private BoardCellWidget[] cells;
 	private RenderableBackgammonBoard renderable;
+	private int curHighlightCell;
 
 	public BackgammonBoardPanel()
 	{
-
+		curHighlightCell = -1;
 		bar = new BoardBar(GameGUICfg.getInstance().getBoardBarWidth(), GameGUICfg.getInstance().getBoardBarHeight());
 
 		cells = new BoardCellWidget[24];
 		for (int i = 0; i < 24; i++)
 			cells[i] = new BoardCellWidget(i);
-		
-		//TODO Score cells?
-		
+
+		// TODO Score cells?
+
 		renderable = new RenderableBackgammonBoard();
 	}
 
@@ -36,15 +39,96 @@ public class BackgammonBoardPanel
 		for (int i = 0; i < 24; i++)
 			boardState.getBoardCell(i).setBoardCellListener(cells[i].getBoardCellListener());
 
-		boardState.getBoardCell(BoardState.PLAYER1_BAR_ID).setBoardCellListener(bar.getBarCellListener(PlayerID.Player1));
-		boardState.getBoardCell(BoardState.PLAYER2_BAR_ID).setBoardCellListener(bar.getBarCellListener(PlayerID.Player2));
-		
-		//TODO Score cells?
+		boardState.getBoardCell(BoardState.PLAYER1_BAR_ID).setBoardCellListener(
+				bar.getBarCellListener(PlayerID.Player1));
+		boardState.getBoardCell(BoardState.PLAYER2_BAR_ID).setBoardCellListener(
+				bar.getBarCellListener(PlayerID.Player2));
+
+		// TODO Score cells?
 	}
-	
+
 	public JPanel getRenderable()
 	{
 		return renderable;
+	}
+
+	public int mouseOverCell(Point point)
+	{
+		int curCellWidth = cells[0].getRenderable().getWidth();
+		int curCellHeight = cells[0].getRenderable().getHeight();
+
+		//Purposefully do integer division
+		int column = point.x / curCellWidth;
+		int row = point.y / curCellHeight;
+
+		System.out.println("Row: "+row+" Col: "+column);
+		
+		int cellID = -1;
+
+		if (column == 6)// Bar
+		{
+			if (row == 0)
+				cellID = BoardState.PLAYER1_BAR_ID;
+			else
+				cellID = BoardState.PLAYER2_BAR_ID;
+		}
+		else
+		{
+			if (row == 0) // Top row
+			{
+				// Top row starts at 12 on the left
+				if(column > 6)
+					cellID = 12 + column - 1; //Minus 1 for the bar column
+				else
+					cellID = 12 + column;
+			}
+			else// Bottom row
+			{
+				// Bottom row ends at 11 on the left.
+				if(column > 6)
+					cellID = 11 - column + 1; //Plus 1 for the bar column 	
+				else
+					cellID = 11 - column;
+			}
+		}
+
+		return cellID;
+	}
+
+	public void highlightCell(Point mouseLocation)
+	{
+		if(curHighlightCell != -1)
+		{
+			if(curHighlightCell < cells.length)
+				cells[curHighlightCell].disableHighlight();
+		}
+		
+		curHighlightCell = mouseOverCell(mouseLocation);
+
+		if(curHighlightCell != -1)
+		{
+			Border temp = BorderFactory.createLineBorder(Color.CYAN);
+			if(curHighlightCell < cells.length)
+				cells[curHighlightCell].setHighlightMode(BoardCellWidget.HighlightMode.Hover);
+			else
+			{
+				switch(curHighlightCell)
+				{
+				case BoardState.PLAYER1_BAR_ID:
+					//TODO highlight player 1 bar
+					break;
+				case BoardState.PLAYER2_BAR_ID:
+					//TODO highlight player 2 bar
+					break;
+				case BoardState.PLAYER1_SCORE_ID:
+					//TODO highlight player 1 score cell
+					break;
+				case BoardState.PLAYER2_SCORE_ID:
+					//TODO highlight player 1 score cell
+					break;
+				}
+			}
+		}
 	}
 
 	@SuppressWarnings("serial")
@@ -102,7 +186,5 @@ public class BackgammonBoardPanel
 			}
 		}
 	}
-
-
 
 }
