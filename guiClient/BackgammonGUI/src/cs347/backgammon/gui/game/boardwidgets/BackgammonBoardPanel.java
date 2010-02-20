@@ -61,8 +61,6 @@ public class BackgammonBoardPanel
 		int column = point.x / curCellWidth;
 		int row = point.y / curCellHeight;
 
-		System.out.println("Row: "+row+" Col: "+column);
-		
 		int cellID = -1;
 
 		if (column == 6)// Bar
@@ -100,14 +98,13 @@ public class BackgammonBoardPanel
 		if(curHighlightCell != -1)
 		{
 			if(curHighlightCell < cells.length)
-				cells[curHighlightCell].disableHighlight();
+				cells[curHighlightCell].setHighlightMode(BoardCellWidget.HighlightMode.Clear);
 		}
 		
 		curHighlightCell = mouseOverCell(mouseLocation);
 
 		if(curHighlightCell != -1)
 		{
-			Border temp = BorderFactory.createLineBorder(Color.CYAN);
 			if(curHighlightCell < cells.length)
 				cells[curHighlightCell].setHighlightMode(BoardCellWidget.HighlightMode.Hover);
 			else
