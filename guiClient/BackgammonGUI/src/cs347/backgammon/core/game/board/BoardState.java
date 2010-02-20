@@ -16,7 +16,7 @@ public class BoardState
 	/**
 	 * There are 24 standard game cells, 12 in each row.
 	 */
-	private final static int NUM_STANDARD_CELLS = 24;
+	public final static int NUM_STANDARD_CELLS = 24;
 
 	/**
 	 * The cell ID for player 1's bar.
