@@ -2,6 +2,8 @@ package cs347.backgammon.core.game;
 
 import cs347.backgammon.core.game.board.BoardState;
 import cs347.backgammon.core.game.board.CellOwner;
+import cs347.backgammon.core.game.players.PlayerID;
+import cs347.backgammon.core.game.players.PlayerInfo;
 
 /**
  * Represents and maintains the current state of the game and informers
@@ -10,12 +12,32 @@ import cs347.backgammon.core.game.board.CellOwner;
 public class GameModel
 {
 	private GameState gameState;
-
+	private PlayerInfo player1, player2;
+	
 	public GameModel()
 	{
+		
+		player1 = new PlayerInfo();
+		player2 = new PlayerInfo();
+		player1.setPlayerID(PlayerID.Player1);
+		player2.setPlayerID(PlayerID.Player2);
 		initGameBoard();
+		
 	}
 
+	/**
+	 * Get the player information for the specified player.
+	 * @param playerID Retrieve the information for this player.
+	 * @return The PlayerInfo for the specified player.
+	 */
+	public PlayerInfo getPlayerInfo(PlayerID playerID)
+	{
+		if(playerID == PlayerID.Player1)
+			return player1;
+		else
+			return player2;
+	}
+	
 	/**
 	 * Setup the starting checker positions.
 	 */
