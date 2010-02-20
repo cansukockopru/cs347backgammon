@@ -37,6 +37,11 @@ public class BoardCell
 	private short checkerCount;
 
 	/**
+	 * The listener for change events on this cell.
+	 */
+	private IBoardCellListener cellListener;
+
+	/**
 	 * Initializes the cell with no owner, no checkers, and with the given ID
 	 * value.
 	 * 
@@ -53,7 +58,7 @@ public class BoardCell
 	}
 
 	/**
-	 * Copy constructor.
+	 * Copy constructor. Does not copy the listener;
 	 * 
 	 * @param toClone
 	 *            The BoardCell to copy.
@@ -76,7 +81,7 @@ public class BoardCell
 	}
 
 	/**
-	 * Set the current cell owner.
+	 * Set the current cell owner. The cell listener will be notified.
 	 * 
 	 * @param cellOwner
 	 *            The new cell owner.
@@ -84,6 +89,7 @@ public class BoardCell
 	public void setCellOwner(CellOwner cellOwner)
 	{
 		this.cellOwner = cellOwner;
+		notifyCellListener();
 	}
 
 	/**
@@ -110,7 +116,8 @@ public class BoardCell
 	}
 
 	/**
-	 * Set how many checkers currently reside on this cell.
+	 * Set how many checkers currently reside on this cell. The cell listener
+	 * will be notified.
 	 * 
 	 * @param checkerCount
 	 *            The new number of checkers at this cell.
@@ -128,6 +135,36 @@ public class BoardCell
 			throw new RuntimeException("New checker count cannot be more than " + MAX_CHECKER_COUNT + ".");
 
 		this.checkerCount = (short) checkerCount;
+		notifyCellListener();
 	}
 
+	/**
+	 * A change has occurred in this BoardCell. Notify the listener.
+	 */
+	protected void notifyCellListener()
+	{
+		if(cellListener != null)
+			cellListener.boardCellChanged(this);
+	}
+
+	/**
+	 * Set the cell listener to be notified when the state of this cell changes.
+	 * 
+	 * @param listener
+	 *            The receiver of change events on this cell.
+	 */
+	public void setBoardCellListener(IBoardCellListener listener)
+	{
+		cellListener = listener;
+	}
+
+	/**
+	 * Get the listener attached to this BoardCell.
+	 * 
+	 * @return The listener attached to this cell or null if not yet set.
+	 */
+	public IBoardCellListener getBoardCellListener()
+	{
+		return cellListener;
+	}
 }
