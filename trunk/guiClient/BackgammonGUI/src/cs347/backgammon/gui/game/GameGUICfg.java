@@ -11,7 +11,7 @@ public class GameGUICfg
 	
 	private GameGUICfg()
 	{
-		
+		//Load from a file?
 	}
 	
 	public static GameGUICfg getInstance()
@@ -67,5 +67,15 @@ public class GameGUICfg
 	public int getBoardBarHeight()
 	{
 		return getBoardCellMinHeight() * 2;
+	}
+	
+	public Color getBoardCellHoverHighlight()
+	{
+		return Color.CYAN;
+	}
+	
+	public Color getBoardCellSelectedHighlight()
+	{
+		return Color.YELLOW;
 	}
 }

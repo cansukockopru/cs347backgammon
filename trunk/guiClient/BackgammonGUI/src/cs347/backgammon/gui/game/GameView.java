@@ -11,6 +11,7 @@ import cs347.backgammon.core.game.board.BoardState;
 import cs347.backgammon.core.game.players.PlayerID;
 import cs347.backgammon.core.game.players.PlayerInfo;
 import cs347.backgammon.gui.game.boardwidgets.BackgammonBoardPanel;
+import cs347.backgammon.gui.game.boardwidgets.BoardHighLighter;
 import cs347.backgammon.gui.game.boardwidgets.checkers.Checker;
 
 public class GameView
@@ -20,6 +21,8 @@ public class GameView
 	// private BackgammonBoardPanel boardPan;
 	private BackgammonBoardPanel boardPan;
 
+	private BoardHighLighter highLighter;
+	
 	private GameCtrl ctrl;
 
 	public GameView()
@@ -36,6 +39,9 @@ public class GameView
 
 		//frame.setJMenuBar(new GameMenuBar().getGUIMenuBar());
 
+		
+		highLighter = new BoardHighLighter(boardPan);
+		
 		buildGUI();
 		frame.pack();
 		frame.setVisible(false);
