@@ -28,6 +28,7 @@ public class BoardCellWidget
 {
 	public enum HighlightMode
 	{
+		Clear,
 		Hover,
 		Selected;
 	}
@@ -44,6 +45,8 @@ public class BoardCellWidget
 
 	private Border normalBorder, hoverBorder, selectedBorder;
 	
+	private HighlightMode highlightMode;
+	
 	public BoardCellWidget(int id)
 	{
 		boardPointID = id;
@@ -57,12 +60,14 @@ public class BoardCellWidget
 		else
 			triangleColor = GameGUICfg.getInstance().getOddBoardCellColor();;
 
-		checkers = new CheckerGroup();
+		checkers = new CheckerGroup(isTopRow);
 		
 		normalBorder = BorderFactory.createLineBorder(new Color(0,0,0,0) /*Transparent*/, 5);
 		//normalBorder = BorderFactory.createLineBorder(Color.BLACK, 5);
 		hoverBorder = BorderFactory.createLineBorder(GameGUICfg.getInstance().getBoardCellHoverHighlight(), 5);
 		selectedBorder = BorderFactory.createLineBorder(GameGUICfg.getInstance().getBoardCellSelectedHighlight(), 5);
+		
+		highlightMode = HighlightMode.Clear;
 		
 		buildGUI();
 		initBoardCellListener();
@@ -75,10 +80,13 @@ public class BoardCellWidget
 	
 	public void setHighlightMode(HighlightMode mode) 
 	{
+		highlightMode = mode;
 		if(mode == HighlightMode.Hover)
 			renderable.setBorder(hoverBorder);
-		else
+		else if(mode == HighlightMode.Selected)
 			renderable.setBorder(selectedBorder);
+		else
+			renderable.setBorder(normalBorder);
 	}
 	
 	public int getBoardCellWidgetID()

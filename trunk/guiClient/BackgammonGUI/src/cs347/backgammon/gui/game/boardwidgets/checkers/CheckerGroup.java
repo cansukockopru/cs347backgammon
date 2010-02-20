@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 
 public class CheckerGroup
 {
+	private static final int NUM_CHECKERS_PER_COLUMN = 8;
 	private static String single = "Single";
 	private static String dual = "Dual";
 
@@ -19,8 +20,11 @@ public class CheckerGroup
 	private List<Checker> leftGroup, rightGroup, centerGroup;
 	private int checkerCount;
 
-	public CheckerGroup()
+	private boolean isTopRow;
+
+	public CheckerGroup(boolean isTopRow)
 	{
+		this.isTopRow = isTopRow;
 		renderable = new JPanel();
 		cardLayout = new CardLayout();
 
@@ -35,7 +39,7 @@ public class CheckerGroup
 
 	private void buildGUI()
 	{
-		for (int i = 0; i < 8; i++)
+		for (int i = 0; i < NUM_CHECKERS_PER_COLUMN; i++)
 		{
 			leftGroup.add(new Checker());
 			rightGroup.add(new Checker());
@@ -53,7 +57,7 @@ public class CheckerGroup
 		JPanel pan = new JPanel();
 		pan.setOpaque(false);
 
-		pan.setLayout(new GridLayout(8, 1));
+		pan.setLayout(new GridLayout(NUM_CHECKERS_PER_COLUMN, 1));
 		for (Checker c : centerGroup)
 			pan.add(c.getRenderable());
 		return pan;
@@ -64,9 +68,9 @@ public class CheckerGroup
 		JPanel pan = new JPanel();
 		pan.setOpaque(false);
 
-		pan.setLayout(new GridLayout(8, 2));
+		pan.setLayout(new GridLayout(NUM_CHECKERS_PER_COLUMN, 2));
 
-		for (int i = 0; i < 8; i++)
+		for (int i = 0; i < NUM_CHECKERS_PER_COLUMN; i++)
 		{
 			pan.add(leftGroup.get(i).getRenderable());
 			pan.add(rightGroup.get(i).getRenderable());
@@ -76,14 +80,14 @@ public class CheckerGroup
 
 	public void setCheckerColor(Color color)
 	{
-		for (int i = 0; i < 8; i++)
+		for (int i = 0; i < NUM_CHECKERS_PER_COLUMN; i++)
 		{
 			leftGroup.get(i).setCheckerColor(color);
 			rightGroup.get(i).setCheckerColor(color);
 			centerGroup.get(i).setCheckerColor(color);
 		}
 	}
-	
+
 	public void setCheckerCount(int checkerCount)
 	{
 		this.checkerCount = checkerCount;
@@ -92,29 +96,52 @@ public class CheckerGroup
 
 	private void resetRenderState()
 	{
-		for (int i = 0; i < 8; i++)
+		for (int i = 0; i < NUM_CHECKERS_PER_COLUMN; i++)
 		{
 			leftGroup.get(i).getRenderable().setVisible(false);
 			rightGroup.get(i).getRenderable().setVisible(false);
 			centerGroup.get(i).getRenderable().setVisible(false);
 		}
 
-		if (checkerCount < 9)
+		if (isTopRow)
 		{
-			for (int i = 0; i < checkerCount; i++)
-				centerGroup.get(i).getRenderable().setVisible(true);
-			cardLayout.show(renderable, single);
+			if (checkerCount < 9)
+			{
+				for (int i = 0; i < checkerCount; i++)
+					centerGroup.get(i).getRenderable().setVisible(true);
+				cardLayout.show(renderable, single);
+			}
+			else
+			{
+				for (int i = 0; i < NUM_CHECKERS_PER_COLUMN; i++)
+					leftGroup.get(i).getRenderable().setVisible(true);
+				int remainder = checkerCount - NUM_CHECKERS_PER_COLUMN;
+
+				for (int i = 0; i < remainder; i++)
+					rightGroup.get(i).getRenderable().setVisible(true);
+				cardLayout.show(renderable, dual);
+			}
 		}
 		else
 		{
-			for (int i = 0; i < 8; i++)
-				leftGroup.get(i).getRenderable().setVisible(true);
-			int remainder = checkerCount - 8;
+			if (checkerCount < 9)
+			{
+				for (int i = 1; i <= checkerCount; i++)
+					centerGroup.get(NUM_CHECKERS_PER_COLUMN - i).getRenderable().setVisible(true);
+				cardLayout.show(renderable, single);
+			}
+			else
+			{
+				for (int i = 1; i <= NUM_CHECKERS_PER_COLUMN; i++)
+					leftGroup.get(NUM_CHECKERS_PER_COLUMN - i).getRenderable().setVisible(true);
+				int remainder = checkerCount - NUM_CHECKERS_PER_COLUMN;
 
-			for (int i = 0; i < remainder; i++)
-				rightGroup.get(i).getRenderable().setVisible(true);
-			cardLayout.show(renderable, dual);
+				for (int i = 1; i <= remainder; i++)
+					rightGroup.get(NUM_CHECKERS_PER_COLUMN - i).getRenderable().setVisible(true);
+				cardLayout.show(renderable, dual);
+			}
 		}
+
 	}
 
 	public JPanel getRenderable()
