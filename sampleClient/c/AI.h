@@ -15,6 +15,7 @@ private:
   void displayBoard();
   void displayStack(int,int);
   int getPoint(int);
+  int getDie(int);
 };
 
 #endif

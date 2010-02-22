@@ -27,9 +27,9 @@ extern "C"
 
 //commands
 
-  DLLEXPORT bool serverboardMove(_ServerBoard* object, int fromPoint, int toPoint);
-  DLLEXPORT bool serverboardBearOff(_ServerBoard* object, int fromPoint);
-  DLLEXPORT bool serverboardTalk(_ServerBoard* object, char* message);
+  DLLEXPORT bool serverBoardMove(_ServerBoard* object, int fromPoint, int toPoint);
+  DLLEXPORT bool serverBoardBearOff(_ServerBoard* object, int fromPoint);
+  DLLEXPORT bool serverBoardTalk(_ServerBoard* object, char* message);
 
 //accessors
 

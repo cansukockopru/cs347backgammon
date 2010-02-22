@@ -34,14 +34,14 @@ library.getStatus.argtypes = []
 library.networkLoop.restype = c_int
 library.networkLoop.argtypes = [c_int]
 
-library.serverboardMove.restype = c_bool
-library.serverboardMove.argtypes = [c_void_p, c_int, c_int]
+library.serverBoardMove.restype = c_bool
+library.serverBoardMove.argtypes = [c_void_p, c_int, c_int]
 
-library.serverboardBearOff.restype = c_bool
-library.serverboardBearOff.argtypes = [c_void_p, c_int]
+library.serverBoardBearOff.restype = c_bool
+library.serverBoardBearOff.argtypes = [c_void_p, c_int]
 
-library.serverboardTalk.restype = c_bool
-library.serverboardTalk.argtypes = [c_void_p, c_char_p]
+library.serverBoardTalk.restype = c_bool
+library.serverBoardTalk.argtypes = [c_void_p, c_char_p]
 
 # accessors
 
