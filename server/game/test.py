@@ -159,3 +159,12 @@ class TestGameLogic(unittest.TestCase):
         self.game.nextTurn()
         self.assertEqual(-1, self.game.myBoard.points[23])
         self.assertEqual(-1, self.game.myBoard.points[22])
+
+    def test_bear_off(self):
+	self.game.start()
+	for i in xrange(len(self.game.myBoard.points)):
+	    self.game.myBoard.points[i] = 0
+	self.game.myBoard.points[19] = 1
+	self.game.turn = self.players[1]
+	self.game.myBoard.dice = [6,0,0,0]
+	self.assertEqual(True, self.game.bearOff(19))
