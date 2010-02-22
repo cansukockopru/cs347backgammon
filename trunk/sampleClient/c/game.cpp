@@ -153,7 +153,7 @@ DLLEXPORT void getStatus()
 }
 
 
-DLLEXPORT bool serverboardMove(_ServerBoard* object, int fromPoint, int toPoint)
+DLLEXPORT bool serverBoardMove(_ServerBoard* object, int fromPoint, int toPoint)
 {
   stringstream expr;
   expr << "(game-move " << object->objectID
@@ -164,7 +164,7 @@ DLLEXPORT bool serverboardMove(_ServerBoard* object, int fromPoint, int toPoint)
   return true;
 }
 
-DLLEXPORT bool serverboardBearOff(_ServerBoard* object, int fromPoint)
+DLLEXPORT bool serverBoardBearOff(_ServerBoard* object, int fromPoint)
 {
   stringstream expr;
   expr << "(game-bear-off " << object->objectID
@@ -174,7 +174,7 @@ DLLEXPORT bool serverboardBearOff(_ServerBoard* object, int fromPoint)
   return true;
 }
 
-DLLEXPORT bool serverboardTalk(_ServerBoard* object, char* message)
+DLLEXPORT bool serverBoardTalk(_ServerBoard* object, char* message)
 {
   stringstream expr;
   expr << "(game-talk " << object->objectID

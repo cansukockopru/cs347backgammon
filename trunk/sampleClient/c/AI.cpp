@@ -48,10 +48,16 @@ bool AI::run()
 
 void AI::displayBoard()
 {
-  cout << "Dice : " << serverBoards[0].die1() << ","
-    << serverBoards[0].die2() << ","
-    << serverBoards[0].die3() << ","
-    << serverBoards[0].die4() << endl;
+  cout << "Dice : ";
+  for (int i = 0; i < 4; i++)
+  {
+    cout << getDie(i);
+    if (i < 3)
+    {
+      cout << ",";
+    }
+  }
+  cout << endl;
   if (getPlayerID() == 0)
   {
     cout << "You are X." << endl;
@@ -60,6 +66,8 @@ void AI::displayBoard()
   {
     cout << "You are O." << endl;
   }
+  cout << "Scores    X: " << player0Score() << "   O: " << player1Score();
+  cout << endl;
   cout << "   +24-23-22-21-20-19--25--18-17-16-15-14-13-+" << endl;
   for (int row = 1; row < 6; row++)
   {
@@ -128,6 +136,24 @@ void AI::displayStack(int point, int height)
   cout << " ";
 }
 
+int AI::getDie(int i)
+{
+  switch (i)
+  {
+    case 0:
+    return serverBoards[0].die1();
+    case 1:
+    return serverBoards[0].die2();
+    case 2:
+    return serverBoards[0].die3();
+    case 3:
+    return serverBoards[0].die4();
+    default:
+    cout << "ERROR : getDie expects an index 0 to 3." << endl;
+    return 0;
+  }
+}
+
 int AI::getPoint(int i)
 {
   switch (i)
@@ -184,5 +210,8 @@ int AI::getPoint(int i)
     return serverBoards[0].point24();
     case 25:
     return serverBoards[0].bar25();
+    default:
+    cout << "ERROR: getPoint requires an index 0 to 25." << endl;
+    return 0;
   }
 }

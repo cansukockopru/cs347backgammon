@@ -166,17 +166,17 @@ int ServerBoard::bar25()
 
 bool ServerBoard::move(int fromPoint, int toPoint)
 {
-  return serverboardMove(ptr, fromPoint, toPoint);
+  return serverBoardMove(ptr, fromPoint, toPoint);
 }
 
 bool ServerBoard::bearOff(int fromPoint)
 {
-  return serverboardBearOff(ptr, fromPoint);
+  return serverBoardBearOff(ptr, fromPoint);
 }
 
 bool ServerBoard::talk(char* message)
 {
-  return serverboardTalk(ptr, message);
+  return serverBoardTalk(ptr, message);
 }
 
 

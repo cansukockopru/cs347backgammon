@@ -35,15 +35,15 @@ class ServerBoard(GameObject):
     raise ExistentialError()
   def move(self, fromPoint, toPoint):
     self.validify()
-    return library.serverBoardMove(self.ptr)
+    return library.serverBoardMove(self.ptr, fromPoint, toPoint)
 
   def bearOff(self, fromPoint):
     self.validify()
-    return library.serverBoardBearOff(self.ptr)
+    return library.serverBoardBearOff(self.ptr, fromPoint)
 
   def talk(self, message):
     self.validify()
-    return library.serverBoardTalk(self.ptr)
+    return library.serverBoardTalk(self.ptr, message)
 
   def getObjectID(self):
     self.validify()
