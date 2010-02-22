@@ -96,7 +96,7 @@ class ServerBoard(GameObject):
 	if lastChecker > 6:
 	    return "Everything must be on your home board before bearing off"
 	dieToUse = -1
-	distance = fromPoint + movingPlayer * (25- 2*i)
+	distance = fromPoint + movingPlayer * (25- 2*fromPoint)
 	if distance in self.dice:
 	    dieToUse = distance
 	if distance == lastChecker and max(self.dice) > distance:

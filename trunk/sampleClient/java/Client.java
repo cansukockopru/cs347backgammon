@@ -17,9 +17,9 @@ public interface Client extends Library {
 
 
     //commands
-    boolean serverboardMove(Pointer object, int fromPoint, int toPoint);
-    boolean serverboardBearOff(Pointer object, int fromPoint);
-    boolean serverboardTalk(Pointer object, String message);
+    boolean serverBoardMove(Pointer object, int fromPoint, int toPoint);
+    boolean serverBoardBearOff(Pointer object, int fromPoint);
+    boolean serverBoardTalk(Pointer object, String message);
 
     //accessors
     int getPlayer0Score();
