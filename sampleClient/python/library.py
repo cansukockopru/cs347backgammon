@@ -57,6 +57,12 @@ library.getPlayerID.argtypes = []
 library.getTurnNumber.restype = c_int
 library.getTurnNumber.argtypes = []
 
+library.getPlayer0Time.restype = c_double
+library.getPlayer0Time.argtypes = []
+
+library.getPlayer1Time.restype = c_double
+library.getPlayer1Time.argtypes = []
+
 library.getServerBoard.restype = c_void_p
 library.getServerBoard.argtypes = [c_int]
 

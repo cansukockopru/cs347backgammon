@@ -46,3 +46,16 @@ class BaseAI:
     def turnNumber():
         return library.getTurnNumber()
 
+    @staticmethod
+    def player0Time():
+        """Player 0's time
+        """
+        return library.getPlayer0Time()
+
+    @staticmethod
+    def player1Time():
+        """Player 1's time
+        """
+        return library.getPlayer1Time()
+
+

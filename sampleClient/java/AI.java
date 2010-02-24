@@ -65,6 +65,8 @@ class AI extends BaseAI
     }
     System.out.print("Scores    X: " + player0Score() + "   O: " +
 	player1Score() + "\n");
+    System.out.print("Times     X: " + player0Time() + "   O: " +
+        player1Time() + "\n");
     System.out.print("   +24-23-22-21-20-19--25--18-17-16-15-14-13-+\n");
     for (int row = 1; row < 6; row++)
     {

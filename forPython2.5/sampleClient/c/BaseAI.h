@@ -26,6 +26,10 @@ public:
   ///Player Number; either 0 or 1
   int playerID();
   int turnNumber();
+  ///Player 0's time
+  double player0Time();
+  ///Player 1's time
+  double player1Time();
   
   ///
   ///Make this your username, which should be provided.

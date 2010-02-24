@@ -21,6 +21,14 @@ int BaseAI::turnNumber()
 {
   return getTurnNumber();
 }
+double BaseAI::player0Time()
+{
+  return getPlayer0Time();
+}
+double BaseAI::player1Time()
+{
+  return getPlayer1Time();
+}
 
 bool BaseAI::startTurn()
 {

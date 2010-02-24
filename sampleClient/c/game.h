@@ -37,6 +37,8 @@ DLLEXPORT int getPlayer0Score();
 DLLEXPORT int getPlayer1Score();
 DLLEXPORT int getPlayerID();
 DLLEXPORT int getTurnNumber();
+DLLEXPORT double getPlayer0Time();
+DLLEXPORT double getPlayer1Time();
 
 DLLEXPORT _ServerBoard* getServerBoard(int num);
 DLLEXPORT int getServerBoardCount();

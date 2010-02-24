@@ -7,6 +7,8 @@ from sexpr.sexpr import *
 import os
 import itertools
 import scribe
+import time
+import threading
 
 ServerBoard = serverBoard.ServerBoard
 Scribe = scribe.Scribe
@@ -48,6 +50,7 @@ class Match(DefaultGameWorld):
             return "Game has already begun"
 	for i in self.players:
 	    i.score = 0
+	    i.timeLeft = 1200.0
         self.mapGeneration()
         self.turnNum = -1
 
@@ -66,6 +69,10 @@ class Match(DefaultGameWorld):
 	self.addObject(self.myBoard)
 
     def nextTurn(self):
+	#stop counting time against the current player
+	if (self.turn is not None):
+	    self.turn.timeLeft -= time.time() - self.turnStartTime
+
         self.turnNum += 1
 	for obj in self.objects.values():
             obj.nextTurn()
@@ -82,6 +89,9 @@ class Match(DefaultGameWorld):
             self.turn = self.players[0]
 
         self.sendStatus(itertools.chain(self.players, self.spectators))
+	threading.Thread(target=self.timeCheck, args=(self.turnNum, \
+			self.turn.timeLeft)).start()
+	self.turnStartTime = time.time()
 
         for obj in self.objects.values():
             obj.changed = False
@@ -142,7 +152,8 @@ class Match(DefaultGameWorld):
         msg = ["status"]
 
         msg.append(["game", self.turnNum, self.players[0].score, 
-		    self.players[1].score])
+		    self.players[1].score, self.players[0].timeLeft,
+		    self.players[1].timeLeft])
         typeLists = defaultdict(list)
         for obj in self.objects.values():
             typeLists[obj.__class__].append(obj)
@@ -154,6 +165,18 @@ class Match(DefaultGameWorld):
 
     def talk(self, message):
         return self.myBoard.talk(message)
+
+    def timeCheck(self, turnStarted, timeLeft):
+	while timeLeft > 5.0:
+	    if (self.turnNum != turnStarted):
+		return
+	    time.sleep(5.0)
+	    timeLeft -= 5.0
+	time.sleep(timeLeft)
+	if (self.turnNum != turnStarted):
+	    return
+	self.declareWinner(self.players[(turnStarted+1)%2])
+
 
 loadClassDefaults()
 

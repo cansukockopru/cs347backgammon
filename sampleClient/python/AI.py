@@ -59,6 +59,8 @@ class AI(BaseAI):
 	    print "You are O."
 	print "Scores    X: ", self.player0Score(), "   O: ", \
 	    self.player1Score()
+	print "Times     X: ", self.player0Time(), "   O: ", \
+	    self.player1Time()
   
 	print "   +24-23-22-21-20-19--25--18-17-16-15-14-13-+"
 	for row in xrange(1, 6):
