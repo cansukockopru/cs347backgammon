@@ -26,6 +26,8 @@ public interface Client extends Library {
     int getPlayer1Score();
     int getPlayerID();
     int getTurnNumber();
+    double getPlayer0Time();
+    double getPlayer1Time();
 
     Pointer getServerBoard(int num);
     int getServerBoardCount();

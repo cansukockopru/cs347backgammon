@@ -65,4 +65,15 @@ public abstract class BaseAI
     {
         return Client.INSTANCE.getTurnNumber();
     }
+    ///Player 0's time
+    double player0Time()
+    {
+        return Client.INSTANCE.getPlayer0Time();
+    }
+    ///Player 1's time
+    double player1Time()
+    {
+        return Client.INSTANCE.getPlayer1Time();
+    }
+
 }

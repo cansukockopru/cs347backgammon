@@ -37,6 +37,8 @@ static int player0Score = 0;
 static int player1Score = 0;
 static int playerID = 0;
 static int turnNumber = 0;
+static double player0Time = 0;
+static double player1Time = 0;
 
 
 static _ServerBoard* ServerBoards = NULL;
@@ -332,6 +334,12 @@ DLLEXPORT int networkLoop(int socket)
           
           player1Score = atoi(sub->val);
           sub = sub->next;
+
+          player0Time = atof(sub->val);
+          sub = sub->next;
+
+          player1Time = atof(sub->val);
+          sub = sub->next;
           
         }
         else if(string(sub->val) == "ServerBoard")
@@ -379,4 +387,12 @@ DLLEXPORT int getPlayerID()
 DLLEXPORT int getTurnNumber()
 {
   return turnNumber;
+}
+DLLEXPORT double getPlayer0Time()
+{
+  return player0Time;
+}
+DLLEXPORT double getPlayer1Time()
+{
+  return player1Time;
 }
