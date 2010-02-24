@@ -67,6 +67,7 @@ void AI::displayBoard()
     cout << "You are O." << endl;
   }
   cout << "Scores    X: " << player0Score() << "   O: " << player1Score();
+  cout << endl;
   cout << "Times     X: " << player0Time() <<  "   O: " << player1Time();
   cout << endl;
   cout << "   +24-23-22-21-20-19--25--18-17-16-15-14-13-+" << endl;
