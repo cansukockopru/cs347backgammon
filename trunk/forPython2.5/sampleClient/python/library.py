@@ -16,7 +16,7 @@ except OSError:
 
 # commands
 
-library.serverLogin.restype = c_bool
+library.serverLogin.restype = c_int #c_bool
 library.serverLogin.argtypes = [c_int, c_char_p, c_char_p]
 
 library.createGame.restype = c_int
@@ -34,13 +34,13 @@ library.getStatus.argtypes = []
 library.networkLoop.restype = c_int
 library.networkLoop.argtypes = [c_int]
 
-library.serverBoardMove.restype = c_bool
+library.serverBoardMove.restype = c_int #c_bool
 library.serverBoardMove.argtypes = [c_void_p, c_int, c_int]
 
-library.serverBoardBearOff.restype = c_bool
+library.serverBoardBearOff.restype = c_int #c_bool
 library.serverBoardBearOff.argtypes = [c_void_p, c_int]
 
-library.serverBoardTalk.restype = c_bool
+library.serverBoardTalk.restype = c_int #c_bool
 library.serverBoardTalk.argtypes = [c_void_p, c_char_p]
 
 # accessors
