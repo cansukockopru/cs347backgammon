@@ -137,6 +137,7 @@ def endTurn(self, expression):
     errBuff = games[self.game].nextTurn()
     if errBuff != True:
         self.writeSExpr(['end-turn-denied', errBuff])
+	games[self.game].sendStatus([self])
         return False
     return True
 

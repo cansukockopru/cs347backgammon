@@ -71,13 +71,15 @@ class Match(DefaultGameWorld):
 	self.addObject(self.myBoard)
 
     def nextTurn(self):
+	#stop counting time against the current player
+        if (self.turn is not None):
+            self.turn.timeLeft -= time.time() - self.turnStartTime
+	    self.turnStartTime = time.time()
 	for obj in self.objects.values():
             errBuff = obj.nextTurn()
 	    if errBuff != True:
 		return errBuff
-	#stop counting time against the current player
-        if (self.turn is not None):
-            self.turn.timeLeft -= time.time() - self.turnStartTime
+
 	self.turnNum += 1
 
 	if (self.turnNum == 0):
@@ -147,6 +149,10 @@ class Match(DefaultGameWorld):
 	return playerIndex
 
     def sendStatus(self, players):
+	#stop counting time against the current player
+        if (self.turn is not None):
+            self.turn.timeLeft -= time.time() - self.turnStartTime
+            self.turnStartTime = time.time()
         for i in players:
             i.writeSExpr(self.status())
             i.writeSExpr(self.animations)

@@ -9,6 +9,7 @@ import itertools
 import scribe
 import time
 import threading
+import random
 
 ServerBoard = serverBoard.ServerBoard
 Scribe = scribe.Scribe
@@ -48,9 +49,10 @@ class Match(DefaultGameWorld):
             return "Game is not full"
         if (self.winner is not None or self.turn is not None):
             return "Game has already begun"
+	timePerPlayer = random.uniform(600.0, 1500.0)
 	for i in self.players:
 	    i.score = 0
-	    i.timeLeft = 1200.0
+	    i.timeLeft = float(timePerPlayer)
         self.mapGeneration()
         self.turnNum = -1
 
@@ -70,12 +72,15 @@ class Match(DefaultGameWorld):
 
     def nextTurn(self):
 	#stop counting time against the current player
-	if (self.turn is not None):
-	    self.turn.timeLeft -= time.time() - self.turnStartTime
-
-        self.turnNum += 1
+        if (self.turn is not None):
+            self.turn.timeLeft -= time.time() - self.turnStartTime
+	    self.turnStartTime = time.time()
 	for obj in self.objects.values():
-            obj.nextTurn()
+            errBuff = obj.nextTurn()
+	    if errBuff != True:
+		return errBuff
+
+	self.turnNum += 1
 
 	if (self.turnNum == 0):
 	    while (self.myBoard.dice[0] == self.myBoard.dice[1]):
@@ -144,6 +149,10 @@ class Match(DefaultGameWorld):
 	return playerIndex
 
     def sendStatus(self, players):
+	#stop counting time against the current player
+        if (self.turn is not None):
+            self.turn.timeLeft -= time.time() - self.turnStartTime
+            self.turnStartTime = time.time()
         for i in players:
             i.writeSExpr(self.status())
             i.writeSExpr(self.animations)
@@ -167,12 +176,13 @@ class Match(DefaultGameWorld):
         return self.myBoard.talk(message)
 
     def timeCheck(self, turnStarted, timeLeft):
-	while timeLeft > 5.0:
+	myTimeLeft = float(timeLeft)
+	while myTimeLeft > 5.0:
 	    if (self.turnNum != turnStarted):
 		return
 	    time.sleep(5.0)
-	    timeLeft -= 5.0
-	time.sleep(timeLeft)
+	    myTimeLeft -= 5.0
+	time.sleep(myTimeLeft)
 	if (self.turnNum != turnStarted):
 	    return
 	self.declareWinner(self.players[(turnStarted+1)%2])
