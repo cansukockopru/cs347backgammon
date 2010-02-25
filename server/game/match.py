@@ -110,7 +110,10 @@ class Match(DefaultGameWorld):
     
     def declareWinner(self, winner):
         self.winner = winner
+	self.accountForTime()
 	self.turn = None
+	winner.score = 15 #Handles the case where the loser ran out of time.
+	self.sendStatus([self.scribe])
 
 	msg = ["game-over", self.id, self.winner.user, self.getPlayerIndex(self.winner)]
 	self.scribe.writeSExpr(msg)
