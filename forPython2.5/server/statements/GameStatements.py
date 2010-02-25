@@ -83,6 +83,7 @@ def winner(self, expression):
 @require_length(1)
 @require_game
 def gameStatus(self, expression):
+    games[self.game].accountForTime()
     games[self.game].sendStatus([self])
     return True
 
