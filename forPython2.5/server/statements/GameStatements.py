@@ -23,7 +23,7 @@ import random
 import math
 from game.match import Match
 from StatementUtils import dict_wrapper, require_length, require_game
-import Statements as Statements
+import statements.Statements as Statements
 
 games = Statements.games
 
@@ -137,6 +137,7 @@ def endTurn(self, expression):
     errBuff = games[self.game].nextTurn()
     if errBuff != True:
         self.writeSExpr(['end-turn-denied', errBuff])
+	games[self.game].sendStatus([self])
         return False
     return True
 

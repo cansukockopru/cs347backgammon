@@ -43,7 +43,6 @@ class ServerBoard(GameObject):
 		success = (success or (self.move(fromPoint,toPoint)==True))
 		success = (success or (self.bearOff(fromPoint)==True))
 		if success:
-		    print "!"
 		    self.dice = oldDice
 		    self.points = oldPoints
 		    for i in xrange(len(self.game.players)):
