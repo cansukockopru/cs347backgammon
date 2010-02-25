@@ -31,20 +31,28 @@ class ServerBoard(GameObject):
 	movingPlayer = self.game.getPlayerIndex(self.game.turn)
         direction = 2*movingPlayer - 1
 	i = 0
+	oldDice = self.dice[:]
+	oldPoints = self.points[:]
+	oldScores = [p.score for p in self.game.players]
 	while (i < 4 and self.dice[i] > 0):
 	    success = False
 	    start = 25-25*movingPlayer
 	    stop = 26*movingPlayer - 1
 	    for fromPoint in xrange(start, stop, direction):
 		toPoint = fromPoint + direction*self.dice[i]
-		success = success or self.move(fromPoint,toPoint)==True
-		success = success or self.bearOff(fromPoint)==True
+		success = (success or (self.move(fromPoint,toPoint)==True))
+		success = (success or (self.bearOff(fromPoint)==True))
 		if success:
-		    break
+		    print "!"
+		    self.dice = oldDice
+		    self.points = oldPoints
+		    for i in xrange(len(self.game.players)):
+			self.game.players[i].score = oldScores[i]
+		    return "You can still make a move from %d"%(fromPoint,)
 	    if not success:
 		i += 1
-
 	self.rollDice()
+	return True
 
     def rollDice(self):
 	self.dice = [random.randint(1,6), random.randint(1,6)]

@@ -69,6 +69,11 @@ class TCPServer(Server):
                     if s == self.serverSocket:
                         ssocket, address = s.accept()
                         address = address[0]
+
+			#
+			address = socket.gethostname()
+			#
+
                         self.openSocket(ssocket, address, True)
 
                     else:
