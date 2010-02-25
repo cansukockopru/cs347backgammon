@@ -71,7 +71,9 @@ class TCPServer(Server):
                         address = address[0]
 
 			#
-			address = socket.gethostname()
+			temp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+			temp.connect(('google.com', 0))
+			address = temp.getsockname()[0]
 			#
 
                         self.openSocket(ssocket, address, True)
