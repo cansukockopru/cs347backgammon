@@ -9,12 +9,17 @@ import java.awt.GridBagLayout;
 import java.awt.RenderingHints;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.GeneralPath;
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ExecutorService;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 import cs347.backgammon.core.game.board.BoardCell;
@@ -28,11 +33,9 @@ public class BoardCellWidget
 {
 	public enum HighlightMode
 	{
-		Clear,
-		Hover,
-		Selected;
+		Clear, Hover, Selected;
 	}
-	
+
 	private int boardPointID;
 	private Color triangleColor;
 
@@ -44,13 +47,19 @@ public class BoardCellWidget
 	private IBoardCellListener cellListener;
 
 	private Border normalBorder, hoverBorder, selectedBorder;
-	
+
 	private HighlightMode highlightMode;
+
+	private ISelectListener selectListener;
+
+	private ExecutorService cmdSvc;
 	
-	public BoardCellWidget(int id)
+	public BoardCellWidget(int id, ISelectListener selectListener, ExecutorService cmdSvc)
 	{
+		this.cmdSvc = cmdSvc;
+		this.selectListener = selectListener;
 		boardPointID = id;
-		if (id < 12)
+		if (id < 13)
 			isTopRow = false;
 		else
 			isTopRow = true;
@@ -58,17 +67,18 @@ public class BoardCellWidget
 		if (id % 2 == 0)
 			triangleColor = GameGUICfg.getInstance().getEvenBoardCellColor();
 		else
-			triangleColor = GameGUICfg.getInstance().getOddBoardCellColor();;
+			triangleColor = GameGUICfg.getInstance().getOddBoardCellColor();
+		;
 
 		checkers = new CheckerGroup(isTopRow);
-		
-		normalBorder = BorderFactory.createLineBorder(new Color(0,0,0,0) /*Transparent*/, 5);
-		//normalBorder = BorderFactory.createLineBorder(Color.BLACK, 5);
+
+		normalBorder = BorderFactory.createLineBorder(new Color(0, 0, 0, 0) /* Transparent */, 5);
+		// normalBorder = BorderFactory.createLineBorder(Color.BLACK, 5);
 		hoverBorder = BorderFactory.createLineBorder(GameGUICfg.getInstance().getBoardCellHoverHighlight(), 5);
 		selectedBorder = BorderFactory.createLineBorder(GameGUICfg.getInstance().getBoardCellSelectedHighlight(), 5);
-		
+
 		highlightMode = HighlightMode.Clear;
-		
+
 		buildGUI();
 		initBoardCellListener();
 	}
@@ -77,41 +87,89 @@ public class BoardCellWidget
 	{
 		renderable.setBorder(normalBorder);
 	}
-	
-	public void setHighlightMode(HighlightMode mode) 
+
+	private void onHighlightModeChange(HighlightMode mode)
 	{
 		highlightMode = mode;
-		if(mode == HighlightMode.Hover)
+		if (mode == HighlightMode.Hover)
 			renderable.setBorder(hoverBorder);
-		else if(mode == HighlightMode.Selected)
+		else if (mode == HighlightMode.Selected)
 			renderable.setBorder(selectedBorder);
 		else
 			renderable.setBorder(normalBorder);
 	}
-	
+
+	public void setHighlightMode(final HighlightMode mode)
+	{
+		if (SwingUtilities.isEventDispatchThread())
+			onHighlightModeChange(mode);
+		else
+		{
+			SwingUtilities.invokeLater(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					onHighlightModeChange(mode);
+				}
+			});
+		}
+	}
+
 	public int getBoardCellWidgetID()
 	{
 		return boardPointID;
 	}
-	
+
+	private void onBoardCellChanged(BoardCell boardCell)
+	{
+		checkers.setCheckerCount(boardCell.getCheckerCount());
+		if (boardCell.getCellOwner() == CellOwner.Player1)
+		{
+			Color checkerColor = GameGUICfg.getInstance().getPlayerCheckerColor(PlayerID.Player1);
+			checkers.setCheckerColor(checkerColor);
+		}
+		else if (boardCell.getCellOwner() == CellOwner.Player2)
+		{
+			Color checkerColor = GameGUICfg.getInstance().getPlayerCheckerColor(PlayerID.Player2);
+			checkers.setCheckerColor(checkerColor);
+		}
+	}
+
 	private void initBoardCellListener()
 	{
 		cellListener = new IBoardCellListener()
 		{
 
 			@Override
-			public void boardCellChanged(BoardCell boardCell)
+			public void boardCellChanged(final BoardCell boardCell)
 			{
-				checkers.setCheckerCount(boardCell.getCheckerCount());
-				if (boardCell.getCellOwner() == CellOwner.Player1)
+
+				if (SwingUtilities.isEventDispatchThread())
+					onBoardCellChanged(boardCell);
+				else
 				{
-					Color checkerColor = GameGUICfg.getInstance().getPlayerCheckerColor(PlayerID.Player1);
-					checkers.setCheckerColor(checkerColor);
-				}
-				else if (boardCell.getCellOwner() == CellOwner.Player2)
-				{
-					Color checkerColor = GameGUICfg.getInstance().getPlayerCheckerColor(PlayerID.Player2);
-					checkers.setCheckerColor(checkerColor);
+					try
+					{
+						SwingUtilities.invokeAndWait(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								onBoardCellChanged(boardCell);
+							}
+						});
+					}
+					catch (InterruptedException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					catch (InvocationTargetException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		};
@@ -133,7 +191,7 @@ public class BoardCellWidget
 
 		int minHeight = GameGUICfg.getInstance().getBoardCellMinHeight();
 		int minWidth = GameGUICfg.getInstance().getBoardCellMinWidth();
-		
+
 		Dimension sz = new Dimension(minWidth, minHeight);
 		JLayeredPane layered = new JLayeredPane();
 		// layered.setLayout(new FlowLayout());
@@ -163,6 +221,64 @@ public class BoardCellWidget
 			gbc.gridy++;
 			renderable.add(cellIDLbl, gbc);
 		}
+
+		renderable.addMouseListener(new MouseListener()
+		{
+
+			@Override
+			public void mouseClicked(MouseEvent me)
+			{
+				if (SwingUtilities.isLeftMouseButton(me))
+				{
+					setHighlightMode(HighlightMode.Selected);
+					cmdSvc.submit(new Runnable()
+					{
+						@Override 
+						public void run()
+						{
+							selectListener.onCellClick(boardPointID, true);
+						}
+					});
+				}
+				else
+				{
+					setHighlightMode(HighlightMode.Hover);
+					cmdSvc.submit(new Runnable()
+					{
+						@Override 
+						public void run()
+						{
+							selectListener.onCellClick(boardPointID, false);
+						}
+					});
+				}
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0)
+			{
+				if (highlightMode != HighlightMode.Selected)
+					setHighlightMode(HighlightMode.Hover);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0)
+			{
+				if (highlightMode != HighlightMode.Selected)
+					setHighlightMode(HighlightMode.Clear);
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0)
+			{
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent arg0)
+			{
+			}
+
+		});
 	}
 
 	public JPanel getRenderable()
@@ -187,7 +303,8 @@ public class BoardCellWidget
 		{
 			super();
 			this.setBackground(GameGUICfg.getInstance().getBoardCellBackgroundColor());
-			Dimension sz = new Dimension(GameGUICfg.getInstance().getBoardCellMinWidth(), GameGUICfg.getInstance().getBoardCellMinHeight());
+			Dimension sz = new Dimension(GameGUICfg.getInstance().getBoardCellMinWidth(), GameGUICfg.getInstance()
+					.getBoardCellMinHeight());
 			this.setMinimumSize(sz);
 			this.setPreferredSize(sz);
 			this.setSize(sz);

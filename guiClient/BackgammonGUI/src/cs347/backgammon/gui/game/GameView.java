@@ -1,9 +1,8 @@
 package cs347.backgammon.gui.game;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -11,7 +10,6 @@ import cs347.backgammon.core.game.board.BoardState;
 import cs347.backgammon.core.game.players.PlayerID;
 import cs347.backgammon.core.game.players.PlayerInfo;
 import cs347.backgammon.gui.game.boardwidgets.BackgammonBoardPanel;
-import cs347.backgammon.gui.game.boardwidgets.BoardHighLighter;
 import cs347.backgammon.gui.game.boardwidgets.checkers.Checker;
 
 public class GameView
@@ -20,8 +18,6 @@ public class GameView
 	private PlayerPanel player1Pan, player2Pan;
 	// private BackgammonBoardPanel boardPan;
 	private BackgammonBoardPanel boardPan;
-
-	private BoardHighLighter highLighter;
 	
 	private GameCtrl ctrl;
 
@@ -38,9 +34,6 @@ public class GameView
 		boardPan = new BackgammonBoardPanel();
 
 		//frame.setJMenuBar(new GameMenuBar().getGUIMenuBar());
-
-		
-		highLighter = new BoardHighLighter(boardPan);
 		
 		buildGUI();
 		frame.pack();
@@ -54,7 +47,7 @@ public class GameView
 
 	public void init(BoardState boardState, PlayerInfo p1, PlayerInfo p2)
 	{
-		boardPan.init(boardState);
+		boardPan.init(boardState, ctrl);
 		initPlayerPanel(player1Pan, p1);
 		initPlayerPanel(player2Pan, p2);
 	}
@@ -82,14 +75,19 @@ public class GameView
 		// frame.add(buildPlayerPanels(), BorderLayout.LINE_START);
 		// frame.add(boardPan.getRenderable(), BorderLayout.CENTER);
 
-		frame.setLayout(new GridBagLayout());
+		
+	/*	frame.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.fill = GridBagConstraints.BOTH;
 		frame.add(buildPlayerPanels(), gbc);
 		gbc.gridx++;
-		frame.add(boardPan.getRenderable(), gbc);
+		frame.add(boardPan.getRenderable(), gbc);*/
+		
+		frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.X_AXIS));
+		frame.add(buildPlayerPanels());
+		frame.add(boardPan.getRenderable());
 	}
 
 	private JPanel buildPlayerPanels()

@@ -47,6 +47,17 @@ public class GameModel
 		return gameState;
 	}
 	
+	
+	/**
+	 * Assumes a valid and legal move is given.
+	 * @param fromID
+	 * @param toID
+	 */
+	public void applyMove(int fromID, int toID)
+	{
+		gameState.getBoardState().applyMove(fromID, toID);
+	}
+	
 	/**
 	 * Setup the starting checker positions.
 	 */
@@ -54,29 +65,29 @@ public class GameModel
 	{
 		BoardState board = gameState.getBoardState();
 		// Player 1 setup
-		board.getBoardCell(0).setCellOwner(CellOwner.Player1);
-		board.getBoardCell(0).setCheckerCount(2);
+		board.getBoardCell(1).setCellOwner(CellOwner.Player1);
+		board.getBoardCell(1).setCheckerCount(2);
 
-		board.getBoardCell(11).setCellOwner(CellOwner.Player1);
-		board.getBoardCell(11).setCheckerCount(5);
-
-		board.getBoardCell(16).setCellOwner(CellOwner.Player1);
-		board.getBoardCell(16).setCheckerCount(3);
-
-		board.getBoardCell(18).setCellOwner(CellOwner.Player1);
-		board.getBoardCell(18).setCheckerCount(5);
-
-		// Player 2 setup
-		board.getBoardCell(5).setCellOwner(CellOwner.Player2);
-		board.getBoardCell(5).setCheckerCount(5);
-
-		board.getBoardCell(7).setCellOwner(CellOwner.Player2);
-		board.getBoardCell(7).setCheckerCount(3);
-
-		board.getBoardCell(12).setCellOwner(CellOwner.Player2);
+		board.getBoardCell(12).setCellOwner(CellOwner.Player1);
 		board.getBoardCell(12).setCheckerCount(5);
 
-		board.getBoardCell(23).setCellOwner(CellOwner.Player2);
-		board.getBoardCell(23).setCheckerCount(2);
+		board.getBoardCell(17).setCellOwner(CellOwner.Player1);
+		board.getBoardCell(17).setCheckerCount(3);
+
+		board.getBoardCell(19).setCellOwner(CellOwner.Player1);
+		board.getBoardCell(19).setCheckerCount(5);
+
+		// Player 2 setup
+		board.getBoardCell(6).setCellOwner(CellOwner.Player2);
+		board.getBoardCell(6).setCheckerCount(5);
+
+		board.getBoardCell(8).setCellOwner(CellOwner.Player2);
+		board.getBoardCell(8).setCheckerCount(3);
+
+		board.getBoardCell(13).setCellOwner(CellOwner.Player2);
+		board.getBoardCell(13).setCheckerCount(5);
+
+		board.getBoardCell(24).setCellOwner(CellOwner.Player2);
+		board.getBoardCell(24).setCheckerCount(2);
 	}
 }

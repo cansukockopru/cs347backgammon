@@ -1,131 +1,79 @@
 package cs347.backgammon.gui.game.boardwidgets;
 
 import java.awt.Color;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 
 import cs347.backgammon.core.game.board.BoardState;
-import cs347.backgammon.core.game.players.PlayerID;
+import cs347.backgammon.gui.game.GameCtrl;
 import cs347.backgammon.gui.game.GameGUICfg;
+import cs347.backgammon.gui.game.boardwidgets.BoardCellWidget.HighlightMode;
 
-public class BackgammonBoardPanel
+public class BackgammonBoardPanel implements ISelectListener
 {
 	private BoardBar bar;
 	private BoardCellWidget[] cells;
 	private RenderableBackgammonBoard renderable;
-	private int curHighlightCell;
-
+	private List<Integer> selectedCells;
+	private GameCtrl ctrl;
+	private ExecutorService cmdExecutor;
+	
 	public BackgammonBoardPanel()
 	{
-		curHighlightCell = -1;
+		cmdExecutor = Executors.newSingleThreadExecutor();
 		bar = new BoardBar(GameGUICfg.getInstance().getBoardBarWidth(), GameGUICfg.getInstance().getBoardBarHeight());
-
-		cells = new BoardCellWidget[24];
-		for (int i = 0; i < 24; i++)
-			cells[i] = new BoardCellWidget(i);
+		selectedCells = new ArrayList<Integer>(2);
+		
+		cells = new BoardCellWidget[26];
+		for (int i = 0; i < cells.length; i++)
+			cells[i] = new BoardCellWidget(i, this, cmdExecutor);
 
 		// TODO Score cells?
 
 		renderable = new RenderableBackgammonBoard();
 	}
 
-	public void init(BoardState boardState)
+	public void init(BoardState boardState, GameCtrl ctrl)
 	{
-		for (int i = 0; i < 24; i++)
+		this.ctrl = ctrl;
+		for (int i = 0; i < cells.length; i++)
 			boardState.getBoardCell(i).setBoardCellListener(cells[i].getBoardCellListener());
 
-		boardState.getBoardCell(BoardState.PLAYER1_BAR_ID).setBoardCellListener(
+/*		boardState.getBoardCell(BoardState.PLAYER1_BAR_ID).setBoardCellListener(
 				bar.getBarCellListener(PlayerID.Player1));
 		boardState.getBoardCell(BoardState.PLAYER2_BAR_ID).setBoardCellListener(
-				bar.getBarCellListener(PlayerID.Player2));
+				bar.getBarCellListener(PlayerID.Player2));*/
 
 		// TODO Score cells?
 	}
-
+	
+	public void onCellClick(int cellID, boolean isSelect)
+	{
+		if(isSelect)
+		{
+			selectedCells.add(cellID);
+			if(selectedCells.size() == 2)
+			{
+				ctrl.sendMove(selectedCells.get(0), selectedCells.get(1));
+				cells[selectedCells.get(0)].setHighlightMode(HighlightMode.Clear);
+				cells[selectedCells.get(1)].setHighlightMode(HighlightMode.Clear);
+				selectedCells.clear();
+			}
+		}
+		else
+			selectedCells.clear();
+	}
+	
 	public JPanel getRenderable()
 	{
 		return renderable;
-	}
-
-	public int mouseOverCell(Point point)
-	{
-		int curCellWidth = cells[0].getRenderable().getWidth();
-		int curCellHeight = cells[0].getRenderable().getHeight();
-
-		//Purposefully do integer division
-		int column = point.x / curCellWidth;
-		int row = point.y / curCellHeight;
-
-		int cellID = -1;
-
-		if (column == 6)// Bar
-		{
-			if (row == 0)
-				cellID = BoardState.PLAYER1_BAR_ID;
-			else
-				cellID = BoardState.PLAYER2_BAR_ID;
-		}
-		else
-		{
-			if (row == 0) // Top row
-			{
-				// Top row starts at 12 on the left
-				if(column > 6)
-					cellID = 12 + column - 1; //Minus 1 for the bar column
-				else
-					cellID = 12 + column;
-			}
-			else// Bottom row
-			{
-				// Bottom row ends at 11 on the left.
-				if(column > 6)
-					cellID = 11 - column + 1; //Plus 1 for the bar column 	
-				else
-					cellID = 11 - column;
-			}
-		}
-
-		return cellID;
-	}
-
-	public void highlightCell(Point mouseLocation)
-	{
-		if(curHighlightCell != -1)
-		{
-			if(curHighlightCell < cells.length)
-				cells[curHighlightCell].setHighlightMode(BoardCellWidget.HighlightMode.Clear);
-		}
-		
-		curHighlightCell = mouseOverCell(mouseLocation);
-
-		if(curHighlightCell != -1)
-		{
-			if(curHighlightCell < cells.length)
-				cells[curHighlightCell].setHighlightMode(BoardCellWidget.HighlightMode.Hover);
-			else
-			{
-				switch(curHighlightCell)
-				{
-				case BoardState.PLAYER1_BAR_ID:
-					//TODO highlight player 1 bar
-					break;
-				case BoardState.PLAYER2_BAR_ID:
-					//TODO highlight player 2 bar
-					break;
-				case BoardState.PLAYER1_SCORE_ID:
-					//TODO highlight player 1 score cell
-					break;
-				case BoardState.PLAYER2_SCORE_ID:
-					//TODO highlight player 1 score cell
-					break;
-				}
-			}
-		}
 	}
 
 	@SuppressWarnings("serial")
@@ -133,6 +81,54 @@ public class BackgammonBoardPanel
 	private class RenderableBackgammonBoard extends JPanel
 	{
 		public RenderableBackgammonBoard()
+		{
+			this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+			this.setLayout(new GridBagLayout());
+		
+			// Top left chunk
+			JPanel topLeft = new JPanel();
+			topLeft.setLayout(new BoxLayout(topLeft, BoxLayout.X_AXIS));
+			for (int i = 24; i > 18; i--)
+				topLeft.add(cells[i].getRenderable());
+
+			//Top right chunk
+			JPanel topRight = new JPanel();
+			topRight.setLayout(new BoxLayout(topRight, BoxLayout.X_AXIS));
+			for (int i = 18; i > 12; i--)
+				topRight.add(cells[i].getRenderable());
+			
+			// Bottom left chunk
+			JPanel bottomLeft = new JPanel();
+			bottomLeft.setLayout(new BoxLayout(bottomLeft, BoxLayout.X_AXIS));
+			for (int i = 1; i < 7 ; i++)
+				bottomLeft.add(cells[i].getRenderable());
+		
+			// Bottom right chunk
+			JPanel bottomRight = new JPanel();
+			bottomRight.setLayout(new BoxLayout(bottomRight, BoxLayout.X_AXIS));
+			for (int i = 7; i < 13 ; i++)
+				bottomRight.add(cells[i].getRenderable());
+			
+			JPanel leftPanel = new JPanel();
+			leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+			leftPanel.add(topLeft);
+			leftPanel.add(bottomLeft);
+			
+			JPanel rightPanel = new JPanel();
+			rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+			rightPanel.add(topRight);
+			rightPanel.add(bottomRight);
+			
+			this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+			this.add(leftPanel);
+			this.add(bar.getRenderable());
+			this.add(rightPanel);
+		}
+	
+		
+/*		public RenderableBackgammonBoard()
 		{
 			this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
@@ -181,7 +177,8 @@ public class BackgammonBoardPanel
 				this.add(cells[i].getRenderable(), gbc);
 				gbc.gridx++;
 			}
-		}
+		}*/
 	}
+
 
 }
