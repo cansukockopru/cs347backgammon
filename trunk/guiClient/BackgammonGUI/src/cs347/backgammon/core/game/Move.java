@@ -1,4 +1,4 @@
-package cs347.backgammon.core.game.moves;
+package cs347.backgammon.core.game;
 
 /**
  * Immutable object representing the movement of a checker.

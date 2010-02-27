@@ -8,20 +8,17 @@ import cs347.backgammon.core.game.players.PlayerID;
 /**
  * Represents the location of all the checkers on the game board.
  * 
- * Standard board cells are numbered 0-23. Special case cells (bar and scoring)
- * are numbered 24-27.
+ * Standard board cells are numbered 1-24. Special case cells (bar and scoring)
+ * are numbered 0 and 25-27.
  */
 public class BoardState
 {
-	/**
-	 * There are 24 standard game cells, 12 in each row.
-	 */
-	public final static int NUM_STANDARD_CELLS = 24;
-
+	public final static int NUMBER_CELLS = 26;
+	
 	/**
 	 * The cell ID for player 1's bar.
 	 */
-	public final static short PLAYER1_BAR_ID = 24;
+	public final static short PLAYER1_BAR_ID = 0;
 
 	/**
 	 * The cell ID for player 2's bar.
@@ -55,13 +52,16 @@ public class BoardState
 
 	public BoardState()
 	{
-		board = new BoardCell[NUM_STANDARD_CELLS];
-		for (int i = 0; i < NUM_STANDARD_CELLS; i++)
+		board = new BoardCell[NUMBER_CELLS];
+		for (int i = 0; i < NUMBER_CELLS; i++)
 			board[i] = new BoardCell((short) i);
 
-		p1Bar = new BoardCell(PLAYER1_BAR_ID);
-		p2Bar = new BoardCell(PLAYER2_BAR_ID);
+//		p1Bar = new BoardCell(PLAYER1_BAR_ID);
+//		p2Bar = new BoardCell(PLAYER2_BAR_ID);
 
+		p1Bar = board[PLAYER1_BAR_ID];
+		p2Bar = board[PLAYER2_BAR_ID];
+		
 		p1Score = new BoardCell(PLAYER1_SCORE_ID);
 		p2Score = new BoardCell(PLAYER2_SCORE_ID);
 	}
@@ -74,12 +74,15 @@ public class BoardState
 	 */
 	public BoardState(BoardState toClone)
 	{
-		board = new BoardCell[NUM_STANDARD_CELLS];
-		for (int i = 0; i < NUM_STANDARD_CELLS; i++)
+		board = new BoardCell[NUMBER_CELLS];
+		for (int i = 0; i < NUMBER_CELLS; i++)
 			board[i] = new BoardCell(toClone.getBoardCell(i));
 
-		p1Bar = new BoardCell(toClone.getPlayer1BarCell());
-		p2Bar = new BoardCell(toClone.getPlayer2BarCell());
+//		p1Bar = new BoardCell(toClone.getPlayer1BarCell());
+//		p2Bar = new BoardCell(toClone.getPlayer2BarCell());
+		
+		p1Bar = board[PLAYER1_BAR_ID];
+		p2Bar = board[PLAYER2_BAR_ID];
 
 		p1Score = new BoardCell(toClone.getPlayer1ScoreCell());
 		p2Score = new BoardCell(toClone.getPlayer2ScoreCell());
@@ -172,12 +175,12 @@ public class BoardState
 			throw new RuntimeException("Cell ID does not match any board cells.");
 
 		BoardCell cell = null;
-		if (id < NUM_STANDARD_CELLS)
+		if (id < NUMBER_CELLS)
 			cell = board[id];
-		else if (id == PLAYER1_BAR_ID)
+/*		else if (id == PLAYER1_BAR_ID)
 			cell = p1Bar;
 		else if (id == PLAYER2_BAR_ID)
-			cell = p2Bar;
+			cell = p2Bar;*/
 		else if (id == PLAYER1_SCORE_ID)
 			cell = p1Score;
 		else if (id == PLAYER2_SCORE_ID)
@@ -185,16 +188,28 @@ public class BoardState
 		return cell;
 	}
 
-	/**
+	/*
 	 * Get the standard 24 board cells.
 	 * 
 	 * @return The standard 24 board cells.
 	 */
-	public List<BoardCell> getStandardBoardCells()
+/*	public List<BoardCell> getStandardBoardCells()
 	{
 		return Arrays.asList(board);
-	}
+	}*/
 
+	/**
+	 * Assumes a valid and legal move is given.
+	 * @param fromID
+	 * @param toID
+	 */
+	public void applyMove(int fromID, int toID)
+	{
+		board[fromID].setCheckerCount(board[fromID].getCheckerCount()-1);
+		board[toID].setCellOwner(board[fromID].getCellOwner());
+		board[toID].setCheckerCount(board[toID].getCheckerCount()+1);
+	}
+	
 	/**
 	 * Forcibly trigger the BoardCells to notify their listeners. Useful for
 	 * initializing the Game GUI.

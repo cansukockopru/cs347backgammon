@@ -20,4 +20,13 @@ public class GameCtrl
 				model.getPlayerInfo(PlayerID.Player1), 
 				model.getPlayerInfo(PlayerID.Player2));
 	}
+	
+	public void sendMove(int fromID, int toID)
+	{
+		//FIXME Send move data to server
+		
+		
+		//Temporary testing
+		model.applyMove(fromID, toID);
+	}
 }
