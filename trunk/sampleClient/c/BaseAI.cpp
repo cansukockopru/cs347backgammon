@@ -46,5 +46,5 @@ bool BaseAI::startTurn()
     initialized = true;
     init();
   }
-  run();
+  return run();
 }
