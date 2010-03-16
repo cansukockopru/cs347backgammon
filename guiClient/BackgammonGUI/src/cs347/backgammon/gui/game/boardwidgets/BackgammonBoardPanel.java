@@ -31,7 +31,7 @@ public class BackgammonBoardPanel implements ISelectListener
 		bar = new BoardBar(GameGUICfg.getInstance().getBoardBarWidth(), GameGUICfg.getInstance().getBoardBarHeight());
 		selectedCells = new ArrayList<Integer>(2);
 		
-		cells = new BoardCellWidget[26];
+		cells = new BoardCellWidget[BoardState.NUMBER_CELLS];
 		for (int i = 0; i < cells.length; i++)
 			cells[i] = new BoardCellWidget(i, this, cmdExecutor);
 
@@ -56,7 +56,7 @@ public class BackgammonBoardPanel implements ISelectListener
 	
 	public void onCellClick(int cellID, boolean isSelect)
 	{
-		if(isSelect)
+		if(isSelect && ctrl.isEnableOperator())
 		{
 			selectedCells.add(cellID);
 			if(selectedCells.size() == 2)

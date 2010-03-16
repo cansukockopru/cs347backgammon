@@ -9,7 +9,7 @@ import cs347.backgammon.core.game.players.PlayerID;
 public class GameState
 {
 	private BoardState board;
-	private DiceState dice;
+	private DiceState p1Dice, p2Dice;
 	private PlayerID currentPlayer;
 
 	/**
@@ -22,10 +22,11 @@ public class GameState
 	 * @param currentPlayer
 	 *            Whose turn is it?
 	 */
-	public GameState(BoardState board, DiceState dice, PlayerID currentPlayer)
+	public GameState(BoardState board, PlayerID currentPlayer)
 	{
 		this.board = new BoardState(board);
-		this.dice = new DiceState(dice);
+		this.p1Dice = DiceState.randomDice();
+		this.p2Dice = DiceState.randomDice();
 		this.currentPlayer = currentPlayer;
 	}
 
@@ -44,11 +45,22 @@ public class GameState
 	 * 
 	 * @return The current dice state.
 	 */
-	public DiceState getDiceState()
+	public DiceState getDiceState(PlayerID playerID)
 	{
-		return dice;
+		if(playerID == PlayerID.Player1)
+			return p1Dice;
+		else
+			return p2Dice;
 	}
 
+	public void setDiceState(PlayerID playerID, DiceState ds)
+	{
+		if(playerID == PlayerID.Player1)
+			p1Dice = ds;
+		else
+			p2Dice = ds;
+	}
+	
 	/**
 	 * Who is the current active player?
 	 * 
