@@ -4,8 +4,10 @@ import java.awt.GridLayout;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import cs347.backgammon.core.game.DiceState;
 import cs347.backgammon.core.game.board.BoardState;
 import cs347.backgammon.core.game.players.PlayerID;
 import cs347.backgammon.core.game.players.PlayerInfo;
@@ -52,6 +54,14 @@ public class GameView
 		initPlayerPanel(player2Pan, p2);
 	}
 	
+	public void setOperatorID(PlayerID operatorID)
+	{
+		if(operatorID == PlayerID.Player1)
+			player1Pan.setIsOperator();
+		else
+			player2Pan.setIsOperator();
+	}
+	
 	private void initPlayerPanel(PlayerPanel pan, PlayerInfo info)
 	{
 		pan.setName(info.getName());
@@ -67,6 +77,27 @@ public class GameView
 		this.ctrl = ctrl;
 	}
 
+	public void alertOnOperatorTurn()
+	{
+		//TODO FIgure out a better way to inform operator.
+		//Flashing gui panel?
+		JOptionPane.showMessageDialog(frame, "Your turn.");
+	}
+	
+	public void setDice(PlayerID playerID, DiceState ds)
+	{
+		if(playerID == PlayerID.Player1)
+		{
+			player1Pan.setDice1((byte)ds.getDice1Value());
+			player1Pan.setDice2((byte)ds.getDice2Value());
+		}
+		else
+		{
+			player2Pan.setDice1((byte)ds.getDice1Value());
+			player2Pan.setDice2((byte)ds.getDice2Value());			
+		}
+	}
+	
 	private void buildGUI()
 	{
 		// frame.setLayout(new BorderLayout());

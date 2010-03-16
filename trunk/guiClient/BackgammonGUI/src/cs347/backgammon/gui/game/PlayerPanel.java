@@ -1,5 +1,6 @@
 package cs347.backgammon.gui.game;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -86,6 +87,11 @@ public class PlayerPanel
 		panel.add(rollDice, gbc);
 	}
 
+	public void setIsOperator()
+	{
+		panel.setBorder(BorderFactory.createLineBorder(Color.CYAN));
+	}
+	
 	
 	public void setName(String name)
 	{

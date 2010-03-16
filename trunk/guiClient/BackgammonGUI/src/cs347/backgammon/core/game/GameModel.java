@@ -16,7 +16,7 @@ public class GameModel
 	
 	public GameModel()
 	{
-		gameState = new GameState(new BoardState(), DiceState.randomDice(), PlayerID.Player1);
+		gameState = new GameState(new BoardState(), PlayerID.Player1);
 		player1 = new PlayerInfo();
 		player2 = new PlayerInfo();
 		player1.setPlayerID(PlayerID.Player1);
@@ -56,6 +56,12 @@ public class GameModel
 	public void applyMove(int fromID, int toID)
 	{
 		gameState.getBoardState().applyMove(fromID, toID);
+	}
+	
+	public void serverUpdate(int cellID, int checkerCount, CellOwner owner)
+	{
+		gameState.getBoardState().getBoardCell(cellID).setCellOwner(owner);
+		gameState.getBoardState().getBoardCell(cellID).setCheckerCount(checkerCount);
 	}
 	
 	/**
