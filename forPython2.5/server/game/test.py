@@ -83,8 +83,10 @@ class TestMatchStart(unittest.TestCase):
         self.assertEqual(True, self.game.start())
 	if (self.game.myBoard.dice[0] > self.game.myBoard.dice[1]):
             self.assertEqual(self.game.turn, self.players[0])
+	    self.game.myBoard.dice = [0,0,0,0]
 	    self.game.nextTurn()
         self.assertEqual(self.game.turn, self.players[1])
+	self.game.myBoard.dice = [0,0,0,0]
         self.game.nextTurn()
         self.assertEqual(self.game.turn, self.players[0])
 
@@ -129,7 +131,8 @@ class TestGameLogic(unittest.TestCase):
 			[-1, 'Username', 'Joe', 'spectator']], 7001, 0]
 	self.assertEqual(self.players[0].messages[0], expected)
 	dice = self.game.myBoard.dice
-	expected = ["status", ["game", self.game.turnNum, 0, 0] , \
+	expected = ["status", ["game", self.game.turnNum, 0, 0, \
+	    self.players[0].timeLeft, self.players[1].timeLeft] , \
 	    ['ServerBoard', [0, dice[0], dice[1], 0, 0, \
 	    0, 2, 0, 0, 0, 0, -5, 0, -3, 0, 0, 0, 5, \
 	    -5, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, -2, 0]]]
@@ -152,13 +155,11 @@ class TestGameLogic(unittest.TestCase):
 	self.assertEqual(-1, self.game.myBoard.points[23])
 	self.assertEqual(-1, self.game.myBoard.points[22])
 
-    def test_auto_move(self):
+    def test_unused_dice(self):
 	self.game.start()
         self.game.turn = self.players[0]
         self.game.myBoard.dice = [1, 2, 0, 0]
-        self.game.nextTurn()
-        self.assertEqual(-1, self.game.myBoard.points[23])
-        self.assertEqual(-1, self.game.myBoard.points[22])
+        self.assertNotEqual(True, self.game.nextTurn())
 
     def test_bear_off(self):
 	self.game.start()
@@ -168,3 +169,43 @@ class TestGameLogic(unittest.TestCase):
 	self.game.turn = self.players[1]
 	self.game.myBoard.dice = [6,0,0,0]
 	self.assertEqual(True, self.game.bearOff(19))
+
+    def test_higher_die_move(self):
+	"""If either die can be used but not both, the larger must be used."""
+	self.game.start()
+        self.game.myBoard.points = [0]*26
+	self.game.myBoard.points[3] = 1
+	self.game.myBoard.points[12] = -2
+	self.game.turn = self.players[1]
+	while (self.game.myBoard.dice != [6,3,0,0]):
+	    self.game.myBoard.rollDice()
+	self.assertNotEqual(True, self.game.move(3, 6))
+	self.assertEqual(True, self.game.move(3, 9))
+	self.assertEqual(True, self.game.nextTurn())
+
+    def test_higher_die_bear(self):
+	"""If either die can be used but not both, the larger must be used"""
+	self.game.start()
+	self.game.myBoard.points = [0]*26
+	self.game.myBoard.points[1] = 2
+	self.game.myBoard.points[3] = -1
+	self.game.myBoard.points[5] = -2
+	self.game.myBoard.points[6] = -1
+	self.game.turn = self.players[0]
+        while (self.game.myBoard.dice != [6,4,0,0]):
+            self.game.myBoard.rollDice()
+        self.assertNotEqual(True, self.game.bearOff(6))
+        self.assertEqual(True, self.game.move(6, 2))
+        self.assertEqual(True, self.game.bearOff(5))
+	self.assertEqual(True, self.game.nextTurn())
+
+    def test_avoidance(self):
+	self.game.start()
+	self.game.myBoard.points = [0, 0, 2, 0, 0, 0,-5, 2, 0, 2, 0, 2, 0,
+				      -5, 2,-4, 0, 0, 0, 2, 1, 2, 0, 0,-1, 0]
+	self.game.turn = self.players[0]
+	while (self.game.myBoard.dice != [6,4,0,0]):
+            self.game.myBoard.rollDice()
+	self.assertNotEqual(True, self.game.move(24,20))
+	self.assertEqual(True, self.game.move(24,18))
+	self.assertEqual(True, self.game.nextTurn())
