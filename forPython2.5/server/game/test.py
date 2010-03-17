@@ -81,8 +81,7 @@ class TestMatchStart(unittest.TestCase):
         self.assertEqual(self.players, self.game.players)
         self.assertNotEqual(True, self.game.addPlayer(MockPlayer()))
         self.assertEqual(True, self.game.start())
-	if (self.game.myBoard.dice[0] > self.game.myBoard.dice[1]):
-            self.assertEqual(self.game.turn, self.players[0])
+	if (self.game.turn == self.players[0]):
 	    self.game.myBoard.dice = [0,0,0,0]
 	    self.game.nextTurn()
         self.assertEqual(self.game.turn, self.players[1])
