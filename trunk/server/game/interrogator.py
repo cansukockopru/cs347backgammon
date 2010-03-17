@@ -66,7 +66,7 @@ class Interrogator:
 
 	self.messageList.append("Come back in from the bar with both dice" \
 				" and making hits")
-        self.stateList.append([0,-5,-5,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        self.stateList.append([0,-3,-3,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                   0, 0, 0, 0, 0, 0, 1, 4, 1, 3, 3, 3, -2])
         self.diceList.append([6,4,0,0])
 
