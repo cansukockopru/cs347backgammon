@@ -155,6 +155,19 @@ class TestGameLogic(unittest.TestCase):
 	self.assertEqual(-1, self.game.myBoard.points[23])
 	self.assertEqual(-1, self.game.myBoard.points[22])
 
+    def test_doubles(self):
+	self.game.start()
+	self.game.turn = self.players[0]
+	self.game.myBoard.points = [0]*26
+	self.game.myBoard.points[25] = -1
+	while (self.game.myBoard.dice[0] != self.game.myBoard.dice[1]):
+	    self.game.myBoard.rollDice()
+	die = int(self.game.myBoard.dice[0])
+	for i in xrange(4):
+	    self.assertNotEqual(True, self.game.nextTurn())
+	    self.assertEqual(True, self.game.move(25-i*die, 25-(i+1)*die))
+	self.assertEqual(True, self.game.nextTurn())
+
     def test_unused_dice(self):
 	self.game.start()
         self.game.turn = self.players[0]
@@ -177,14 +190,16 @@ class TestGameLogic(unittest.TestCase):
 	self.game.myBoard.points[3] = 1
 	self.game.myBoard.points[12] = -2
 	self.game.turn = self.players[1]
+	oldPoints = self.game.myBoard.points[:]
 	while (self.game.myBoard.dice != [6,3,0,0]):
 	    self.game.myBoard.rollDice()
+	self.assertEqual(oldPoints, self.game.myBoard.points)
 	self.assertNotEqual(True, self.game.move(3, 6))
 	self.assertEqual(True, self.game.move(3, 9))
 	self.assertEqual(True, self.game.nextTurn())
 
-    def test_higher_die_bear(self):
-	"""If either die can be used but not both, the larger must be used"""
+    def test_avoidance_bear(self):
+	""" Avoidance when bearing off """
 	self.game.start()
 	self.game.myBoard.points = [0]*26
 	self.game.myBoard.points[1] = 2
@@ -192,8 +207,11 @@ class TestGameLogic(unittest.TestCase):
 	self.game.myBoard.points[5] = -2
 	self.game.myBoard.points[6] = -1
 	self.game.turn = self.players[0]
+	oldPoints = self.game.myBoard.points[:]
+	self.game.myBoard.rollDice()
         while (self.game.myBoard.dice != [6,4,0,0]):
             self.game.myBoard.rollDice()
+	self.assertEqual(oldPoints, self.game.myBoard.points)
         self.assertNotEqual(True, self.game.bearOff(6))
         self.assertEqual(True, self.game.move(6, 2))
         self.assertEqual(True, self.game.bearOff(5))
@@ -209,3 +227,14 @@ class TestGameLogic(unittest.TestCase):
 	self.assertNotEqual(True, self.game.move(24,20))
 	self.assertEqual(True, self.game.move(24,18))
 	self.assertEqual(True, self.game.nextTurn())
+
+    def test_can_use(self):
+        self.game.start()
+        self.game.turn = self.players[0]
+        self.game.myBoard.dice = [1, 2, 0, 0]
+	oldPoints = self.game.myBoard.points[:]
+        self.assertNotEqual(False, self.game.myBoard.canUse([1,2]))
+	self.assertNotEqual(False, self.game.myBoard.canUse([1,2]))
+	self.assertEqual(False, self.game.myBoard.canUse([2122]))
+	self.assertEqual(oldPoints, self.game.myBoard.points)
+
