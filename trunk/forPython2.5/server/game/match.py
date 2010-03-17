@@ -7,12 +7,14 @@ from sexpr.sexpr import *
 import os
 import itertools
 import scribe
+import interrogator
 import time
 import threading
 import random
 
 ServerBoard = serverBoard.ServerBoard
 Scribe = scribe.Scribe
+Interrogator = interrogator.Interrogator
 
 def loadClassDefaults(cfgFile = "config/defaults.cfg"):
     cfg = config.config.readConfig(cfgFile)
@@ -26,6 +28,7 @@ class Match(DefaultGameWorld):
         self.id = int(id)
 	self.controller = controller
 	self.scribe = Scribe(self.logPath())
+	self.interrogator = None
 	self.addPlayer(self.scribe, "spectator")
 
     def addPlayer(self, connection, type="player"):
@@ -36,6 +39,10 @@ class Match(DefaultGameWorld):
             self.players.append(connection)
         elif (cmp(type, "spectator") == 0):
             self.spectators.append(connection)
+	if self.runTestCases and len(self.players) == 1:
+	    self.interrogator = Interrogator(self)
+	    self.addPlayer(self.interrogator)
+	    self.start()
         return True
 
     def removePlayer(self, connection):
@@ -49,7 +56,7 @@ class Match(DefaultGameWorld):
             return "Game is not full"
         if (self.winner is not None or self.turn is not None):
             return "Game has already begun"
-	timePerPlayer = random.uniform(600.0, 1500.0)
+	timePerPlayer = random.uniform(Match.minTime, Match.maxTime)
 	for i in self.players:
 	    i.score = 0
 	    i.timeLeft = float(timePerPlayer)
@@ -82,13 +89,20 @@ class Match(DefaultGameWorld):
 	if (self.turnNum == 0):
 	    while (self.myBoard.dice[0] == self.myBoard.dice[1]):
 		self.myBoard.rollDice()
-	    if random.randint(0,1) == 1:
+	    if random.randint(0,1) == 1 or self.runTestCases:
 		self.turnNum += 1
 		self.turn = self.players[0]#Will be changed two lines down
         if (self.turn == self.players[0]):
             self.turn = self.players[1]
         else:
             self.turn = self.players[0]
+
+	self.myBoard.rollDice()
+
+	if self.turn == self.interrogator:
+	    self.turnNum += 1
+	    self.turn = self.players[0]
+	    self.interrogator.nextQuestion()
 
         self.sendStatus(itertools.chain(self.players, self.spectators))
 	threading.Thread(target=self.timeCheck, args=(self.turnNum, \
