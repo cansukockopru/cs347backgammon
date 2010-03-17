@@ -86,9 +86,9 @@ class Match(DefaultGameWorld):
 
 	self.turnNum += 1
 
+	firstTurn = False
 	if (self.turnNum == 0):
-	    while (self.myBoard.dice[0] == self.myBoard.dice[1]):
-		self.myBoard.rollDice()
+	    firstTurn = True
 	    if random.randint(0,1) == 1 or self.runTestCases:
 		self.turnNum += 1
 		self.turn = self.players[0]#Will be changed two lines down
@@ -98,6 +98,8 @@ class Match(DefaultGameWorld):
             self.turn = self.players[0]
 
 	self.myBoard.rollDice()
+	while (firstTurn and self.myBoard.dice[0] == self.myBoard.dice[1]):
+	    self.myBoard.rollDice()
 
 	if self.turn == self.interrogator:
 	    self.turnNum += 1
