@@ -24,6 +24,11 @@ class Interrogator:
 			          0, 0, 0, 0, 3, 2, 0,-1, 0, 0, 0, 0, 0])
         self.diceList.append([3,2,0,0])
 
+	self.messageList.append("Larger Die Rule 3")
+        self.stateList.append([0, 0, 2, 2, 0, 0,-3, 0, 0, 0, 0, 2, 3,
+                                  2, 0,-5,-4, 0, 2, 2, 0, 0,-1, 0, 0,-1])
+        self.diceList.append([4,3,0,0])
+
 	self.messageList.append("Avoidance Rule 1")
 	self.stateList.append([0, 2, 0,-1, 0,-2,-1, 0, 0, 0, 0, 0, 0,
 				  0, 0, 0, 0, 0, 0, 3, 2, 2, 2, 2, 2, 0])
