@@ -159,6 +159,7 @@ class TestGameLogic(unittest.TestCase):
 	self.game.turn = self.players[0]
 	self.game.myBoard.points = [0]*26
 	self.game.myBoard.points[25] = -1
+	self.game.myBoard.rollDice()
 	while (self.game.myBoard.dice[0] != self.game.myBoard.dice[1]):
 	    self.game.myBoard.rollDice()
 	die = int(self.game.myBoard.dice[0])
@@ -190,6 +191,7 @@ class TestGameLogic(unittest.TestCase):
 	self.game.myBoard.points[12] = -2
 	self.game.turn = self.players[1]
 	oldPoints = self.game.myBoard.points[:]
+	self.game.myBoard.rollDice()
 	while (self.game.myBoard.dice != [6,3,0,0]):
 	    self.game.myBoard.rollDice()
 	self.assertEqual(oldPoints, self.game.myBoard.points)
@@ -221,6 +223,7 @@ class TestGameLogic(unittest.TestCase):
 	self.game.myBoard.points = [0, 0, 2, 0, 0, 0,-5, 2, 0, 2, 0, 2, 0,
 				      -5, 2,-4, 0, 0, 0, 2, 1, 2, 0, 0,-1, 0]
 	self.game.turn = self.players[0]
+	self.game.myBoard.rollDice()
 	while (self.game.myBoard.dice != [6,4,0,0]):
             self.game.myBoard.rollDice()
 	self.assertNotEqual(True, self.game.move(24,20))
