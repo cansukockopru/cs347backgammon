@@ -14,10 +14,15 @@ class Interrogator:
 	self.diceList = []
 	self.messageList = []
 
-	self.messageList.append("Larger Die Rule")
+	self.messageList.append("Larger Die Rule 1")
 	self.stateList.append([0, 0, 2, 0, 0, 0,-5, 2, 0, 2, 0, 2, 0,
                                  -5, 2,-4, 0, 0, 0, 2, 1, 2, 0, 0,-1, 0])
 	self.diceList.append([6,4,0,0])
+
+	self.messageList.append("Larger Die Rule 2")
+        self.stateList.append([0,-4,-2, 0, 0, 0, 0, 3, 0, 0, 1, 0,-1,
+			          0, 0, 0, 0, 3, 2, 0,-1, 0, 0, 0, 0, 0])
+        self.diceList.append([3,2,0,0])
 
 	self.messageList.append("Avoidance Rule 1")
 	self.stateList.append([0, 2, 0,-1, 0,-2,-1, 0, 0, 0, 0, 0, 0,
@@ -28,6 +33,16 @@ class Interrogator:
 	self.stateList.append([0, 0, 2, 2, 0, 0,-5,-3, 0, 2, 0, 0, 0,
                                  -5, 0, 0, 0, 0, 0, 3, 2, 0, 2, 2,-2, 0])
 	self.diceList.append([6,4,0,0])
+
+	self.messageList.append("Avoidance Rule 3")
+        self.stateList.append([0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 1, 0,-3,
+                                  0, 0, 3, 0, 3, 3, 0, 1,-2, 0, 0, 0, 0])
+        self.diceList.append([3,2,0,0])
+
+	self.messageList.append("Avoidance Rule 4")
+        self.stateList.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                  3,-5, 0, 0, 0, 3,-1, 0, 3, 3, 3, 0,-1])
+        self.diceList.append([6,1,0,0])
 
 	self.messageList.append("Come back in from the bar with smaller die")
 	self.stateList.append([0,-5,-5,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0,
