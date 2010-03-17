@@ -104,6 +104,7 @@ def gameMove(self, expression):
     
     errBuff = games[self.game].move(fromPoint, toPoint)
     if errBuff != True:
+	games[self.game].errors += 1
         self.writeSExpr(['game-move-denied', errBuff])
         return False
     return True
@@ -111,7 +112,7 @@ def gameMove(self, expression):
 @wrapper('game-bear-off')
 @require_length(3)
 @require_game
-def gameMove(self, expression):
+def gameBearOff(self, expression):
     if games[self.game].turn != self:
         self.writeSExpr(['game-bear-off-denied', 'not your turn'])
         return False
@@ -124,6 +125,7 @@ def gameMove(self, expression):
 
     errBuff = games[self.game].bearOff(fromPoint)
     if errBuff != True:
+	games[self.game].errors += 1
         self.writeSExpr(['game-bear-off-denied', errBuff])
         return False
     return True
@@ -137,6 +139,7 @@ def endTurn(self, expression):
         return False
     errBuff = games[self.game].nextTurn()
     if errBuff != True:
+	games[self.game].errors += 1
         self.writeSExpr(['end-turn-denied', errBuff])
 	games[self.game].sendStatus([self])
         return False

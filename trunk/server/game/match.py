@@ -29,6 +29,7 @@ class Match(DefaultGameWorld):
 	self.controller = controller
 	self.scribe = Scribe(self.logPath())
 	self.interrogator = None
+	self.errors = 0
 	self.addPlayer(self.scribe, "spectator")
 
     def addPlayer(self, connection, type="player"):
