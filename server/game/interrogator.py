@@ -100,7 +100,12 @@ class Interrogator:
 
     def nextQuestion(self):
 	if (len(self.stateList) == 0):
-	    print "Interrogator: ", "all tests have been passed!"
+	    print "Interrogator:", "All tests have been completed."
+	    if self.game.errors > 0:
+		print "Interrogator:", "Unfortunately, you made", \
+		    self.game.errors, "errors along the way..."
+	    else:
+		print "Interrogator: You made no errors! Hooray!"
 	    self.game.declareWinner(self.game.players[0])
 	else:
 	    self.game.myBoard.points = self.stateList.pop()[:]
