@@ -25,7 +25,7 @@ def checkObscureRules(func):
 	
 	#Call the original function and return any errors
 	errBuffer = func(self, *args)
-	if (errBuffer != True):
+	if (errBuffer != True or not enforceAll):
 	    return errBuffer
 	
 	#Avoidance Rule
@@ -33,8 +33,8 @@ def checkObscureRules(func):
         #the remaining die, undo the move.
         if (self.canPlayBoth and self.dice[0] != 0 \
         and not self.canUse([self.dice[0]])):
-            self.dice = oldDice
-            self.points = oldPoints
+            self.dice = oldDice[:]
+            self.points = oldPoints[:]
             for i in xrange(len(self.game.players)):
                 self.game.players[i].score = oldScores[i]
             return "If you can play both dice, you must."
@@ -43,8 +43,8 @@ def checkObscureRules(func):
 	usedLargest = (self.dice[0] != oldDice[0])
         if (couldHaveUsedLargest and not usedLargest \
 	and not self.canUse([self.dice[0]])):
-            self.dice = oldDice
-            self.points = oldPoints
+            self.dice = oldDice[:]
+            self.points = oldPoints[:]
             for i in xrange(len(self.game.players)):
                 self.game.players[i].score = oldScores[i]
             return "If you can use either die but not both, you must "\
@@ -61,7 +61,7 @@ class ServerBoard(GameObject):
     def __init__(self, game):
         GameObject.__init__(self, game)
 	self.points = [0]*26
-	self.dice = [0]*4
+	self.rollDice()
 
     def toList(self):
         list = GameObject.toList(self)
@@ -87,18 +87,24 @@ class ServerBoard(GameObject):
 	self.dice = [random.randint(1,6), random.randint(1,6)]
 	if self.dice[0] == self.dice[1]:
 	    self.dice = self.dice*2
-	    self.canPlayBoth = False
+	    doubles = True
 	else:
-	    self.canPlayBoth = (self.canUse(self.dice) or \
-		self.canUse(list(reversed(self.dice))))
 	    self.dice.extend([0]*2)
+	    doubles = False
+	self.dice.sort()
+	self.dice.reverse()
+	if doubles:
+	    self.canPlayBoth = False #The rule does not apply
+	else:
+	    self.canPlayBoth = ((self.canUse(self.dice[0:2])!=False) or \
+                (self.canUse(self.dice[1::-1])!=False))
 
     def canUse(self, dice):
 	""" Checks to see if the dice can be legally used in order.
 
 	    Returns a string if you can, returns False otherwise """
 	if len(dice) == 0 or dice[0] == 0:
-	    return True
+	    return False
 	success = False
 	movingPlayer = self.game.getPlayerIndex(self.game.turn)
         direction = 2*movingPlayer - 1
@@ -111,12 +117,15 @@ class ServerBoard(GameObject):
 	    toPoint = fromPoint + direction*dice[0]
 	    success = (success or (self.move(fromPoint,toPoint,enforceAll=False)==True))
             success = (success or (self.bearOff(fromPoint, enforceAll=False)==True))
-            if success and self.canUse(dice[1:]):
-                self.dice = oldDice
-                self.points = oldPoints
+            if success:
+		result = "You can still use a die"
+		if len(dice) > 1 and dice[1] != 0:
+		    result = self.canUse(dice[1:])
+                self.dice = oldDice[:]
+                self.points = oldPoints[:]
                 for i in xrange(len(self.game.players)):
                     self.game.players[i].score = oldScores[i]
-                return "You can still make a move from %d"%(fromPoint,)
+                return result
 	return False
 
     @checkObscureRules
