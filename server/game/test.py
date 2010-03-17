@@ -238,3 +238,12 @@ class TestGameLogic(unittest.TestCase):
 	self.assertEqual(False, self.game.myBoard.canUse([2122]))
 	self.assertEqual(oldPoints, self.game.myBoard.points)
 
+    def test_random_first_player(self):
+	count = 0
+	for i in xrange(30):
+	    self.game.start()
+	    if self.game.turn == self.players[0]:
+		count += 1
+	    self.game.turn = None
+	self.assertTrue(count > 5 and count < 25)
+
