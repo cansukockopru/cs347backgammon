@@ -82,7 +82,7 @@ class Match(DefaultGameWorld):
 	if (self.turnNum == 0):
 	    while (self.myBoard.dice[0] == self.myBoard.dice[1]):
 		self.myBoard.rollDice()
-	    if self.myBoard.dice[1] > self.myBoard.dice[0]:
+	    if random.randint(0,1) == 1:
 		self.turnNum += 1
 		self.turn = self.players[0]#Will be changed two lines down
         if (self.turn == self.players[0]):
