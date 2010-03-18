@@ -263,3 +263,14 @@ class TestGameLogic(unittest.TestCase):
 	self.assertEqual(True, self.game.bearOff(1))
         self.assertEqual(True, self.game.nextTurn())
 
+    def test_nuckolls_gamelog(self):
+	"""Tests a specific instance from Matt's gamelogs"""
+	self.game.start()
+        self.game.myBoard.points = [0,-1,-4,-1,-1, 0, 0,-1,-1, 0, 0, 0, 0,
+				       0, 0, 0, 0,-1, 0,-1,-1, 0, 0,-3, 1, 0]
+        self.game.turn = self.players[1]
+        self.game.myBoard.rollDice()
+        while (self.game.myBoard.dice != [6,6,6,6]):
+            self.game.myBoard.rollDice()
+        self.assertEqual(True, self.game.bearOff(24))
+        self.assertEqual(True, self.game.nextTurn())
