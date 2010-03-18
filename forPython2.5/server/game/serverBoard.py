@@ -116,7 +116,7 @@ class ServerBoard(GameObject):
 	for fromPoint in xrange(start, stop, direction):
 	    toPoint = fromPoint + direction*dice[0]
 	    success = (success or (self.move(fromPoint,toPoint,enforceAll=False)==True))
-            success = (success or (self.bearOff(fromPoint, enforceAll=False)==True))
+            success = (success or (self.bearOff(fromPoint, dice[0], enforceAll=False)==True))
             if success:
 		result = "You can still use a die"
 		if len(dice) > 1 and dice[1] != 0:
@@ -165,7 +165,7 @@ class ServerBoard(GameObject):
 	return True
 
     @checkObscureRules
-    def bearOff(self, fromPoint):
+    def bearOff(self, fromPoint, mustUseDie=None):
 	movingPlayer = self.game.getPlayerIndex(self.game.turn)
         direction = 2*movingPlayer - 1
 	lastChecker = 0#distance of current player's furthest checker from home
@@ -186,6 +186,8 @@ class ServerBoard(GameObject):
 	    dieToUse = int(max(self.dice))
 	if dieToUse == -1:
             return "The dice prevent this bear off"
+	if mustUseDie is not None and dieToUse != mustUseDie:
+	    return "This would not use the specified die"
         if self.points[fromPoint] * direction < 1:
             return "You have no checkers to move from there"
         if abs(self.points[25-25*movingPlayer]) > 0 and \
