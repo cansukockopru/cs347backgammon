@@ -274,3 +274,17 @@ class TestGameLogic(unittest.TestCase):
             self.game.myBoard.rollDice()
         self.assertEqual(True, self.game.bearOff(24))
         self.assertEqual(True, self.game.nextTurn())
+
+    def test_bear_off_smaller(self):
+	"""Bear off using the smaller die"""
+	self.game.start()
+        self.game.myBoard.points = [0,-2,-1,-3,-1,-3, 0, 0,-1, 0, 0, 0, 0,
+				       0, 0, 0, 0, 0, 0, 3, 0, 4, 2, 4,-4, 0]
+        self.game.turn = self.players[1]
+        self.game.myBoard.rollDice()
+        while (self.game.myBoard.dice != [5,2,0,0]):
+            self.game.myBoard.rollDice()
+	self.assertEqual(False, self.game.myBoard.canUse([5]))
+	self.assertNotEqual(True, self.game.bearOff(3))
+        self.assertEqual(True, self.game.move(19,21))
+        self.assertEqual(True, self.game.nextTurn())

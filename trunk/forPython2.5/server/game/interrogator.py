@@ -100,6 +100,11 @@ class Interrogator:
                                   0, 0,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 	self.diceList.append([6,6,6,6])
 
+	self.messageList.append("Bear off / move using smaller die")
+	self.stateList.append([0, 4,-4,-2,-4, 0,-3, 0, 0, 0, 0, 0, 0,
+			          0, 0, 0, 0, 1, 0, 0, 3, 1, 3, 1, 2, 0])
+	self.diceList.append([5,2,0,0])
+
     def writeSExpr(self, message):
         pass
 
