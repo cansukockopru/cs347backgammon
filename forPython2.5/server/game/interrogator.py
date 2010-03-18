@@ -1,4 +1,5 @@
 from sexpr.sexpr import *
+import random
 
 class Interrogator:
     """
@@ -59,10 +60,11 @@ class Interrogator:
                                   0, 0, 2, 0, 0, 0, 0, 2, 2, 3, 3, 3, -1])
         self.diceList.append([6,4,0,0])
 
-	self.messageList.append("Come back in from the bar with doubles")
-	self.stateList.append([0,-5,-5,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                  0, 0, 2, 0, 0, 0, 3, 2, 2, 3, 3, 0, -4])
-        self.diceList.append([1,1,1,1])
+	#Tested with the generator for doubles questions
+	#self.messageList.append("Come back in from the bar with doubles")
+	#self.stateList.append([0,-5,-5,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        #                          0, 0, 2, 0, 0, 0, 3, 2, 2, 3, 3, 0, -4])
+        #self.diceList.append([1,1,1,1])
 
 	self.messageList.append("Stuck on the bar with a closed board")
 	self.stateList.append([0,-5,-5,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -85,6 +87,8 @@ class Interrogator:
                                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
         self.diceList.append([5,2,0,0])
 
+	#Different from the questions generated about doubles because one
+	#of the checkers is moved twice.
 	self.messageList.append("Move and Bear off with doubles")
 	self.stateList.append([0,-3, 0, 0,-1, 0, 0,-1, 0, 0, 0, 0, 0,
                                   0, 0, 0, 0, 0, 7, 3, 5, 0, 0, 0, 0, 0])
@@ -95,21 +99,74 @@ class Interrogator:
                                   0, 3, 3,-5,-4, 0, 1, 3, 0, 0, 1, 0,-1])
         self.diceList.append([2,2,2,2])
 
-	self.messageList.append("Use three of four dice")
-	self.stateList.append([0, 0, 0, 0, 0, 0, 0,-3, 0, 5, 0, 0, 0,
-                                  0, 0,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-	self.diceList.append([6,6,6,6])
+	#Tested with the generator for doubles questions
+	#self.messageList.append("Use three of four dice")
+	#self.stateList.append([0, 0, 0, 0, 0, 0, 0,-3, 0, 5, 0, 0, 0,
+        #                          0, 0,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+	#self.diceList.append([6,6,6,6])
 
-	self.messageList.append("Bear off / move using smaller die")
-	self.stateList.append([0, 4,-4,-2,-4, 0,-3, 0, 0, 0, 0, 0, 0,
+	self.messageList.append("Bear off using only the smaller die")
+	self.stateList.append([0, 4,-4, 0, 0, 0,-3, 0, 0, 0, 0, 0, 0,
 			          0, 0, 0, 0, 1, 0, 0, 3, 1, 3, 1, 2, 0])
 	self.diceList.append([5,2,0,0])
+
+	self.messageList.append("Bear off using only the larger die")
+        self.stateList.append([0, 4,-4, 0, 4,-3, 0, 0, 0, 0, 0, 0, 0,
+                                  0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 2, 0])
+        self.diceList.append([5,1,0,0])
+
+	self.messageList.append("Move using only the smaller die")
+	self.stateList.append([0, 0, 0, 0, 0, 4, 0, 2, 0,-3, 0,-3, 0,
+                                  2, 0, 2, 0,-4, 0, 0, 0, 0, 0, 0, 0, 0])
+        self.diceList.append([4,2,0,0])
+
+	self.messageList.append("Bear off with the larger die, then move")
+        self.stateList.append([0,-1,-3, 0,-1, 0,-1, 0, 0, 0, 1, 0, 0,
+                                  2, 0, 0, 0, 3, 0, 0, 0, 0, 1, 2, 4, 0])
+        self.diceList.append([6,3,0,0])
+
+	self.messageList.append("Bear off with both dice")
+        self.stateList.append([0,-3,-3,-2,-2,-1,-1, 0, 0, 0, 1, 0, 0,
+                                  1, 0, 0, 0, 1, 0, 0, 2, 0, 1, 3, 4, 0])
+        self.diceList.append([6,3,0,0])
+
+	self.generateDoublesQuestions()
+
+    def generateDoublesQuestions(self):
+	"""
+	Generates questions covering all scenarios for doubles
+	"""
+	# a - The number of checkers you have on the bar,
+	#	or the number of checkers you have on your ace point
+	# b - The number of checkers you can move (a+b<=4)
+	# c,d - A random single checker, or no checker
+	for a in xrange(5):
+	    for b in xrange(5-a):
+		c = random.randint(-1,1)
+		d = random.randint(-1,1)
+		self.messageList.append("Doubles - Enter %d, Move %d"%(a,b))
+	        self.stateList.append([0, 0, 2,-4, 0, 2, int(c),
+			            int(-b), 0, 0, 0, 1, 0,
+			                  0, 2, 1, 0, 0, 0,
+					  0, 0, 0, 2, 2, int(d), int(-a)])
+		self.diceList.append([1,1,1,1])
+		if (a == 0):
+		    #Entering 0 checkers is the same as bearing 0 checkers off
+		    continue
+		c = random.randint(-1,1)
+		self.messageList.append("Doubles - Move %d, Bear %d"%(b,a))
+                self.stateList.append([0, int(-a), 2,-4, 0, 2, int(c),
+                                    int(-b), 0, 0, 0, 1, 0,
+                                          0, 2, 1, 0, 0, 0,
+                                          0, 0, 0, 2, 2, 0, 0])
+                self.diceList.append([1,1,1,1])
 
     def writeSExpr(self, message):
         pass
 
     def nextQuestion(self):
 	if (len(self.stateList) == 0):
+
 	    print "Interrogator:", "All tests have been completed."
 	    if self.game.errors > 0:
 		print "Interrogator:", "Unfortunately, you made", \
