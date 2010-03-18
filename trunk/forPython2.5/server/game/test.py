@@ -249,3 +249,17 @@ class TestGameLogic(unittest.TestCase):
 	    self.game.turn = None
 	self.assertTrue(count > 5 and count < 25)
 
+    def test_partially_usable_doubles(self):
+	"""Use three of four dice"""
+	self.game.start()
+        self.game.myBoard.points = [0,-1,-1,-1, 0, 0, 0, 0, 0, 5, 0, 0, 0,
+                                       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.game.turn = self.players[0]
+        self.game.myBoard.rollDice()
+        while (self.game.myBoard.dice != [6,6,6,6]):
+            self.game.myBoard.rollDice()
+	self.assertEqual(True, self.game.bearOff(3))
+	self.assertEqual(True, self.game.bearOff(2))
+	self.assertEqual(True, self.game.bearOff(1))
+        self.assertEqual(True, self.game.nextTurn())
+
