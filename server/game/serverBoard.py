@@ -21,7 +21,7 @@ def checkObscureRules(func):
 	#If you could have used either die, but you chose the smaller die,
         # and then you wouldn't be able to use the larger die, undo the move.
         couldHaveUsedLargest = (enforceAll and (0 not in self.dice[0:2] and \
-	    self.canUse([self.dice[0]])))
+	    self.canUse([self.dice[0]])) and self.dice[0] != self.dice[1])
 	
 	#Call the original function and return any errors
 	errBuffer = func(self, *args)

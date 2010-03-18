@@ -95,6 +95,11 @@ class Interrogator:
                                   0, 3, 3,-5,-4, 0, 1, 3, 0, 0, 1, 0,-1])
         self.diceList.append([2,2,2,2])
 
+	self.messageList.append("Use three of four dice")
+	self.stateList.append([0, 0, 0, 0, 0, 0, 0,-3, 0, 5, 0, 0, 0,
+                                  0, 0,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+	self.diceList.append([6,6,6,6])
+
     def writeSExpr(self, message):
         pass
 
