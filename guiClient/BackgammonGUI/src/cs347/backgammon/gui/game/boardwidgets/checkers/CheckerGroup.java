@@ -8,6 +8,9 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import net.miginfocom.layout.LC;
+import net.miginfocom.swing.MigLayout;
+
 public class CheckerGroup
 {
 	private static final int NUM_CHECKERS_PER_COLUMN = 8;
@@ -57,9 +60,13 @@ public class CheckerGroup
 		JPanel pan = new JPanel();
 		pan.setOpaque(false);
 
-		pan.setLayout(new GridLayout(NUM_CHECKERS_PER_COLUMN, 1));
+		pan.setLayout(new MigLayout(new LC().fill()));
 		for (Checker c : centerGroup)
-			pan.add(c.getRenderable());
+			pan.add(c.getRenderable(), "grow, wrap");
+		
+//		pan.setLayout(new GridLayout(NUM_CHECKERS_PER_COLUMN, 1));
+//		for (Checker c : centerGroup)
+//			pan.add(c.getRenderable());
 		return pan;
 	}
 
@@ -68,13 +75,20 @@ public class CheckerGroup
 		JPanel pan = new JPanel();
 		pan.setOpaque(false);
 
-		pan.setLayout(new GridLayout(NUM_CHECKERS_PER_COLUMN, 2));
+		//pan.setLayout(new GridLayout(NUM_CHECKERS_PER_COLUMN, 2));
+		pan.setLayout(new MigLayout());
 
 		for (int i = 0; i < NUM_CHECKERS_PER_COLUMN; i++)
 		{
+			pan.add(leftGroup.get(i).getRenderable(), "grow");
+			pan.add(rightGroup.get(i).getRenderable(), "grow, wrap");
+		}
+		
+/*		for (int i = 0; i < NUM_CHECKERS_PER_COLUMN; i++)
+		{
 			pan.add(leftGroup.get(i).getRenderable());
 			pan.add(rightGroup.get(i).getRenderable());
-		}
+		}*/
 		return pan;
 	}
 

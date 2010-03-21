@@ -1,55 +1,33 @@
 package cs347.backgammon.gui.game.boardwidgets;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.RenderingHints;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.geom.GeneralPath;
-import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ExecutorService;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
 
-import cs347.backgammon.core.game.board.BoardCell;
-import cs347.backgammon.core.game.board.CellOwner;
-import cs347.backgammon.core.game.board.IBoardCellListener;
-import cs347.backgammon.core.game.players.PlayerID;
 import cs347.backgammon.gui.game.GameGUICfg;
-import cs347.backgammon.gui.game.boardwidgets.AbstractBoardCell.CellMouseListener;
-import cs347.backgammon.gui.game.boardwidgets.checkers.CheckerGroup;
 
-public class BoardCellWidget extends AbstractBoardCell
+public class BarCellWidget extends AbstractBoardCell
 {
-	private Color triangleColor;
-
-	public BoardCellWidget(int id, ISelectListener selectListener, ExecutorService cmdSvc)
+	
+	public BarCellWidget(int id, ISelectListener selectListener, ExecutorService cmdSvc, boolean isTopRow)
 	{
-		/*if (id < 13)
-			isTopRow = false;
-		else
-			isTopRow = true;*/
-		super(id, selectListener, cmdSvc, (id < 13) ? false : true);
-
-		if (id % 2 == 0)
-			triangleColor = GameGUICfg.getInstance().getEvenBoardCellColor();
-		else
-			triangleColor = GameGUICfg.getInstance().getOddBoardCellColor();
+		super(id, selectListener, cmdSvc, isTopRow);
 	}
+
 
 	@Override
 	protected void buildGUI()
+	{
+		renderable = new JPanel();
+		renderable.setBorder(normalBorder);
+
+		renderable.setBackground(GameGUICfg.getInstance().getBoardCellBackgroundColor());
+		renderable.add(checkers.getRenderable());
+		
+		renderable.addMouseListener(new CellMouseListener());
+	}
+	
+/*	private void buildGUI()
 	{
 		renderable = new JPanel();
 		renderable.setLayout(new GridBagLayout());
@@ -60,8 +38,6 @@ public class BoardCellWidget extends AbstractBoardCell
 		// gbc.fill = GridBagConstraints.BOTH;
 		gbc.anchor = GridBagConstraints.CENTER;
 
-		JLabel cellIDLbl = new JLabel(Integer.toString(boardPointID));
-		// cellIDLbl.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
 		int minHeight = GameGUICfg.getInstance().getBoardCellMinHeight();
 		int minWidth = GameGUICfg.getInstance().getBoardCellMinWidth();
@@ -96,12 +72,70 @@ public class BoardCellWidget extends AbstractBoardCell
 			renderable.add(cellIDLbl, gbc);
 		}
 
-		renderable.addMouseListener(new CellMouseListener());
-	}
+		renderable.addMouseListener(new MouseListener()
+		{
 
-	@SuppressWarnings("serial")
+			@Override
+			public void mouseClicked(MouseEvent me)
+			{
+				if (SwingUtilities.isLeftMouseButton(me))
+				{
+					setHighlightMode(HighlightMode.Selected);
+					cmdSvc.submit(new Runnable()
+					{
+						@Override 
+						public void run()
+						{
+							selectListener.onCellClick(boardPointID, true);
+						}
+					});
+				}
+				else
+				{
+					setHighlightMode(HighlightMode.Hover);
+					cmdSvc.submit(new Runnable()
+					{
+						@Override 
+						public void run()
+						{
+							selectListener.onCellClick(boardPointID, false);
+						}
+					});
+				}
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0)
+			{
+				if (highlightMode != HighlightMode.Selected)
+					setHighlightMode(HighlightMode.Hover);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0)
+			{
+				if (highlightMode != HighlightMode.Selected)
+					setHighlightMode(HighlightMode.Clear);
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0)
+			{
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent arg0)
+			{
+			}
+
+		});
+	}*/
+
+
+
+//	@SuppressWarnings("serial")
 	// Should never be serialized
-	private class RenderableBoardCell extends JPanel
+/*	private class RenderableBoardCell extends JPanel
 	{
 		private int width;
 		private int height;
@@ -177,5 +211,5 @@ public class BoardCellWidget extends AbstractBoardCell
 
 			g2d.fill(path);
 		}
-	}
+	}*/
 }

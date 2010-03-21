@@ -9,7 +9,14 @@ public class Move// implements Comparable<Move>
 	private short fromID;
 	private short toID;
 	private long moveID;
-
+	private boolean isScore;
+	
+	public static final short END_TURN = -1;
+	/**
+	 * Used as the "To ID" when bearing off a checker.
+	 */
+	public static final short NULL_ID = -2;
+	
 	/**
 	 * Initialize the BoardCell ID values for this checker move. Initializes
 	 * this move's ID.
@@ -72,31 +79,15 @@ public class Move// implements Comparable<Move>
 		return moveID;
 	}
 
-/*	@Override
-	public int compareTo(Move move)
+	public boolean isScore()
 	{
-		if(moveID == move.moveID)
-			return 0;
-		else if(moveID < move.moveID)
-			return -1;
-		else
-			return 1;
-	}*/
+		return isScore;
+	}
 
-/*	@Override
-	public boolean equals(Object other)
+	public void setIsScore(boolean isScore)
 	{
-		Move otherMove = (Move) other;
-		boolean isEqual = false;
-		if (otherMove.fromID == fromID && otherMove.toID == toID)
-			isEqual = true;
-
-		return isEqual;
+		this.isScore = isScore;
 	}
 	
-	@Override
-	public int hashCode()
-	{
-		
-	}*/
+	
 }

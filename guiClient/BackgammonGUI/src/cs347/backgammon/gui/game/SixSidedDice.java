@@ -110,6 +110,8 @@ public class SixSidedDice
 			int dotDiameter = dotRadius * 2;
 			switch(value)
 			{
+				case 0:
+					break;
 				case 1:
 					g2d.fillOval(midColX, midRowY, dotDiameter, dotDiameter);
 					break;

@@ -10,7 +10,7 @@ public class DiceState
 	/**
 	 * A six sided dice cannot be less than 1.
 	 */
-	private static final short MIN_DICE_VALUE = 1;
+	private static final short MIN_DICE_VALUE = 0;
 	
 	/**
 	 * A six sided dice cannot be greater than 6.
@@ -67,7 +67,7 @@ public class DiceState
 	
 	/**
 	 * Sets the value of die 1.
-	 * @param diceValue A value between 1 and 6 inclusive.
+	 * @param diceValue A value between 0 and 6 inclusive.
 	 * @throws RuntimeException Thrown if diceValue is not between 1 and 6 inclusive.
 	 */
 	public void setDice1Value(int diceValue)
@@ -81,7 +81,7 @@ public class DiceState
 	
 	/**
 	 * Sets the value of die 2.
-	 * @param diceValue A value between 1 and 6 inclusive.
+	 * @param diceValue A value between 0 and 6 inclusive.
 	 * @throws RuntimeException Thrown if diceValue is not between 1 and 6 inclusive.
 	 */
 	public void setDice2Value(int diceValue)
