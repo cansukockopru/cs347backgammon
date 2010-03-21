@@ -23,9 +23,10 @@ public class GameCtrl
 	public void setView(GameView gv)
 	{
 		this.view = gv;
-		view.init(model.getCurrentGameState().getBoardState(), model
+		view.init(model.getCurrentGameState().getBoardState());
+		/*view.init(model.getCurrentGameState().getBoardState(), model
 				.getPlayerInfo(PlayerID.Player1), model
-				.getPlayerInfo(PlayerID.Player2));
+				.getPlayerInfo(PlayerID.Player2));*/
 	}
 
 	public void setEnableOperator(boolean enable)
@@ -42,13 +43,25 @@ public class GameCtrl
 	{
 		return operatorID;
 	}
-
-	public void sendMove(int fromID, int toID)
+	
+	public void bearOff()
 	{
-		// FIXME Send move data to server
-
+		int fromID = view.getCellIDForBearOff();
+		if(fromID != Move.NULL_ID)
+			sendMove(fromID, Move.NULL_ID, true);
+		else
+		{
+			//TODO Inform user of error
+		}
+	}
+	
+	public void sendMove(int fromID, int toID, boolean isScore)
+	{
 		// Temporary testing
 		//model.applyMove(fromID, toID);
-		gameMngr.sendMove(new Move(fromID, toID));
+
+		Move mv = new Move(fromID, toID);
+		mv.setIsScore(isScore);
+		gameMngr.sendMove(mv);
 	}
 }

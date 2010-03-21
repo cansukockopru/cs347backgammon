@@ -1,101 +1,117 @@
 package cs347.backgammon.gui.game;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
+import cs347.backgammon.core.game.Move;
 import cs347.backgammon.core.game.players.PlayerID;
-import cs347.backgammon.core.game.players.PlayerType;
+import cs347.backgammon.gui.game.boardwidgets.checkers.Checker;
 
 public class PlayerPanel
 {
 	private JPanel panel;
-	private JLabel name, score, timeRemaining, type;
+	private JLabel name, score, timeRemaining;//, type;
 	private SixSidedDice dice1, dice2;
-	private JButton rollDice;
+	private Checker checkerSample;
+	private GameCtrl ctrl;
+	private JButton endTurn, bearOff;
+	private boolean isLocal;
 	
-	public PlayerPanel(PlayerID playerID)
+	public PlayerPanel(PlayerID playerID, GameCtrl ctrl)
 	{
+		this.ctrl = ctrl;
 		panel = new JPanel();
 		panel.setBorder(BorderFactory.createTitledBorder(playerID.toString()));
-		panel.setMinimumSize(new Dimension(150, 180));
-		panel.setPreferredSize(new Dimension(150, 180));
 		
+		isLocal = false;
 		
-		
-		name = new JLabel();
+		name = new JLabel("Remote Player");
 		score = new JLabel();
 		timeRemaining = new JLabel();
-		type = new JLabel();
+		//type = new JLabel();
 		
 		dice1 = new SixSidedDice();
 		dice2 = new SixSidedDice();
 		
-		rollDice = new JButton("Roll Dice");
+		checkerSample = new Checker();
+		checkerSample.setCheckerColor(GameGUICfg.getInstance().getPlayerCheckerColor(playerID));
 		
 		buildGUI();
 	}
 
 	private void buildGUI()
 	{
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0; gbc.gridy = 0;
-		gbc.anchor = GridBagConstraints.LINE_START;
+		endTurn = new JButton("End Turn");
+		endTurn.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				ctrl.sendMove(Move.END_TURN, Move.END_TURN, false);
+			}
+		});
+		endTurn.setVisible(false);
 		
-		panel.add(new JLabel("Name:"), gbc);
-		gbc.gridx++;
-		panel.add(name, gbc);
-		gbc.gridx = 0;
-		gbc.gridy++;
+		bearOff = new JButton("Bear Off");
+		bearOff.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				ctrl.bearOff();
+			}
+		});
+		bearOff.setVisible(false);
 		
-		panel.add(new JLabel("Type:"), gbc);
-		gbc.gridx++;
-		panel.add(type, gbc);
-		gbc.gridx = 0;
-		gbc.gridy++;
+		panel.setLayout(new MigLayout());
+		panel.add(new JLabel("Name:"));
+		panel.add(name, "wrap");
+
+		panel.add(new JLabel("Score:"));
+		panel.add(score, "wrap");
 		
-		panel.add(new JLabel("Score:"), gbc);
-		gbc.gridx++;
-		panel.add(score, gbc);
-		gbc.gridx = 0;
-		gbc.gridy++;
+		panel.add(new JLabel("Time:"));
+		panel.add(timeRemaining, "wrap");
 		
-		panel.add(new JLabel("Time Remaining:"), gbc);
-		gbc.gridx++;
-		panel.add(timeRemaining, gbc);
-		gbc.gridx = 0;
-		gbc.gridy++;
+		panel.add(endTurn, "span, wrap");
+		panel.add(bearOff, "span, wrap");
 		
-		gbc.anchor = GridBagConstraints.CENTER;
+		dice1.getRenderable().setVisible(false);
+		dice2.getRenderable().setVisible(false);
 		
-		gbc.fill = GridBagConstraints.BOTH;
-		panel.add(dice1.getRenderable(), gbc);
-		gbc.gridx++;
-		panel.add(dice2.getRenderable(), gbc);
-		gbc.gridx = 0;
-		gbc.gridy++;
-		gbc.fill = GridBagConstraints.NONE;
+		panel.add(dice1.getRenderable());
+		panel.add(dice2.getRenderable(), "wrap");
 		
-		gbc.gridwidth = 2;
-		panel.add(rollDice, gbc);
+		checkerSample.getRenderable().setVisible(true);
+		panel.add(new JLabel("Checkers:"));
+		panel.add(checkerSample.getRenderable(), "span 2 2, grow");
+		
+
+	}
+	
+	public void enableInput(boolean enable)
+	{
+		if(isLocal)
+		{
+			endTurn.setEnabled(enable);
+			bearOff.setEnabled(enable);
+		}
 	}
 
 	public void setIsOperator()
 	{
-		panel.setBorder(BorderFactory.createLineBorder(Color.CYAN));
-	}
-	
-	
-	public void setName(String name)
-	{
-		this.name.setText(name);
+		isLocal = true;
+		name.setText("Local Player");
+		dice1.getRenderable().setVisible(true);
+		dice2.getRenderable().setVisible(true);
+		endTurn.setVisible(true);
+		bearOff.setVisible(true);
 	}
 	
 	public void setScore(int score)
@@ -104,15 +120,10 @@ public class PlayerPanel
 		this.score.setText(scoreAsString);
 	}
 	
-	public void setPlayerType(PlayerType type)
-	{
-		this.type.setText(type.toString());
-	}
-	
-	public void setTimeRemaining(long seconds)
+	public void setTimeRemaining(double seconds)
 	{
 		//Convert seconds to minutes and seconds
-		long numMinutes = seconds / 60L;
+		int numMinutes = (int)(seconds / 60.0);
 		int numSeconds = ((int)seconds) % 60;
 		timeRemaining.setText(numMinutes + ":" + numSeconds);
 	}

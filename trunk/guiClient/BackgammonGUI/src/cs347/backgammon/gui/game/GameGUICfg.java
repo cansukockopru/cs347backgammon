@@ -2,6 +2,9 @@ package cs347.backgammon.gui.game;
 
 import java.awt.Color;
 
+import javax.swing.BorderFactory;
+import javax.swing.border.Border;
+
 import cs347.backgammon.core.game.players.PlayerID;
 
 public class GameGUICfg
@@ -77,5 +80,20 @@ public class GameGUICfg
 	public Color getBoardCellSelectedHighlight()
 	{
 		return Color.YELLOW;
+	}
+	
+	public Border getNormalCellBorder()
+	{
+		return BorderFactory.createLineBorder(new Color(0, 0, 0, 0) /* Transparent */, 5);
+	}
+	
+	public Border getHoverCellBorder()
+	{
+		return BorderFactory.createLineBorder(GameGUICfg.getInstance().getBoardCellHoverHighlight(), 5);
+	}
+	
+	public Border getSelectedCellBorder()
+	{
+		return BorderFactory.createLineBorder(GameGUICfg.getInstance().getBoardCellSelectedHighlight(), 5);
 	}
 }

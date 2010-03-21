@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 public class Checker
 {
-	private static int minWidth, minHeight;
+	//private static int minWidth, minHeight;
 	
 	private RenderableChecker renderable;
 	private Color color;
@@ -21,11 +21,11 @@ public class Checker
 		renderable = new RenderableChecker();
 	}
 	
-	public static void initConfiguration(int minWidth, int minHeight)
+/*	public static void initConfiguration(int minWidth, int minHeight)
 	{
 		Checker.minHeight = minHeight;
 		Checker.minWidth = minWidth;
-	}
+	}*/
 	
 	public void setCheckerColor(Color color)
 	{

@@ -6,18 +6,16 @@ package cs347.backgammon.core.game.players;
 public class PlayerInfo
 {
 	private PlayerID playerID;
-	private String name;
 	private PlayerType playerType;
 
-	// Time remaining
-	// Wins/losses?
+	// Time remaining?
 
 	/**
-	 * Initializes the player name with a blank and everything else as null. 
+	 * Initializes the everything as null. 
 	 */
 	public PlayerInfo()
 	{
-		name = "";
+		//name = "";
 	}
 	
 	/**
@@ -28,8 +26,6 @@ public class PlayerInfo
 	{
 		playerID = toClone.playerID;
 		playerType = toClone.playerType;
-		//Deep copy, not shallow
-		name = new String(toClone.name);
 	}
 
 	/**
@@ -50,23 +46,6 @@ public class PlayerInfo
 		this.playerID = playerID;
 	}
 
-	/**
-	 * Retrieve this player's name.  This value appears on the game GUI.
-	 * @return The name of this player.
-	 */
-	public String getName()
-	{
-		return name;
-	}
-
-	/**
-	 * Set the name of this player.  This value will appear on the game GUI.
-	 * @param name The new name value for this player.
-	 */
-	public void setName(String name)
-	{
-		this.name = name;
-	}
 
 	/**
 	 * Is this player a local GUI operator or a remote client?
