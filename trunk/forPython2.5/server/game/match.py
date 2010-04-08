@@ -58,6 +58,8 @@ class Match(DefaultGameWorld):
         if (self.winner is not None or self.turn is not None):
             return "Game has already begun"
 	timePerPlayer = random.uniform(Match.minTime, Match.maxTime)
+	if self.runTestCases == 1:
+	    timePerPlayer = 60.0
 	for i in self.players:
 	    i.score = 0
 	    i.timeLeft = float(timePerPlayer)
