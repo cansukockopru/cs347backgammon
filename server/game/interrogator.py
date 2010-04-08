@@ -162,7 +162,8 @@ class Interrogator:
                 self.diceList.append([1,1,1,1])
 
     def writeSExpr(self, message):
-        pass
+	if (message[0] == 'game-over' and message[2] == 'Interrogator'):
+	    print "Interrogator: You ran out of time"
 
     def nextQuestion(self):
 	if (len(self.stateList) == 0):
